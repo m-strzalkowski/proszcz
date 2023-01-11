@@ -1,5 +1,5 @@
 # proszcz
-
+Interpreter Proszcza oraz system programowania genetycznego.
 
 
 ## Getting started
