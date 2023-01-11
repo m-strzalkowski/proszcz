@@ -1,0 +1,15 @@
+digraph G {
+
+subgraph cluster_P1622006612 {label="c";
+node [style=filled;];
+subgraph cluster_Z2008362258 {label="ARGMAX";
+"0.0" [shape=diamond]}subgraph cluster_Z760563749 {label="ARGMIN";
+"0.0" [shape=diamond]}subgraph cluster_Z1753447031 {label="MEMLIMIT";
+"64.0" [shape=diamond]}N1702146597 -> N644460953;
+N1702146597[label="-";fillcolor="#ff0000";];
+N644460953 -> N591723622;
+N644460953 -> N1166726978;
+N644460953[label="|";fillcolor="#ff0000";];
+N591723622[label="-84.3";fillcolor="#0000ff";];
+N1166726978[label="99.3";fillcolor="#ff0000";];
+color=black;}}

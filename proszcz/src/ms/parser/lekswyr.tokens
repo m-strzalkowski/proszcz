@@ -1,0 +1,6 @@
+ZMIENNA=1
+NAZWA=2
+STALA=3
+IntegerLiteral=4
+COMMENT=5
+WS=6

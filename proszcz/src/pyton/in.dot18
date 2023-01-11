@@ -1,0 +1,19 @@
+digraph G {
+
+subgraph cluster_P1595953398 {label="c";
+node [style=filled;];
+subgraph cluster_Z2017354584 {label="MEMLIMIT";
+"64.0" [shape=diamond]}N551734240 -> N1757293506;
+N551734240 -> N687780858;
+N551734240[label="<";fillcolor="#ff0000";];
+N1757293506 -> N1734161410;
+N1757293506 -> N1364614850;
+N1757293506[label="+";fillcolor="#ff0000";];
+N1734161410[label="88.0";fillcolor="#ff0000";];
+N1364614850 -> N1211076369;
+N1364614850 -> N361993357;
+N1364614850[label="~=";fillcolor="#0000ff";];
+N1211076369[label="34.5";fillcolor="#0000ff";];
+N361993357[label="52.2";fillcolor="#0000ff";];
+N687780858[label="-58.6";fillcolor="#ff0000";];
+color=black;}}

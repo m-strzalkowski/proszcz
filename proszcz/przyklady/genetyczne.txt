@@ -1,0 +1,8 @@
+f,g,h,k::=nic;
+grow 2 into f; color f #c00; show f;
+grow 5 into g; color g #0c0; show g;
+full 4 into h; color h #00c; show h;
+
+point-mutate from f into f; show f;
+subtree-mutate from g into g; show g;
+cross f with g into k; show k;

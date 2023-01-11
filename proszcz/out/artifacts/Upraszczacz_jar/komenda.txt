@@ -1,0 +1,16 @@
+java -jar Upraszczacz.jar -u -D -i rozw/$file -o uproszczone_rozw/$file -T zad/$file -O wyniki_csv/$file
+#uruchom upraszczacz, niech skraca wyrażenie -u, niech uzywa definicji dzielenia z TinyGp -d, niech formułe wypisze od pliku -o, niech 
+wykona przebeg po danych testowych w pliku -T, niech wynik testów zapisze do -O.
+#uruchom wszystkie
+ls zad -1 | while read file; do java -jar Upraszczacz.jar -u -D -i rozw/$file -o uproszczone_rozw/$file -T zad/$file -O wyniki_csv/$file; done
+#wszystkie rozszerzone
+ls zad -1 |sed 's/p\.dat$//'| while read file; do java -jar Upraszczacz.jar -u -D -i rozw/f${file}.dat -o uproszczone_rozw/f${file}.dat -T zad/${file}p.dat -O wyniki_csv/$f{file}.dat -N rozszerzone; done
+
+ls zad -1 | sed 's/....$//'
+#EXCELMAKE
+ls zad -1 | sed 's/....$//'| while read file; do python excelmake.py wyniki_csv/${file}.dat wyniki_excel/$file; done
+#EXCELMAKE JOIN
+ls zad -1 | sed 's/p\.dat$//'| while read file; do python excelmake.py wyniki_csv/${file}p.dat wyniki_csv/f${file}.dat wyniki_excel/$file; done
+#pojedyncze EXCELMAKE
+${file}.dat wyniki_excel/$file; done
+file='4ap.dat';python excelmake.py wyniki_csv/${file}.dat wyniki_excel/$file

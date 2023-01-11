@@ -1,0 +1,37 @@
+digraph G {
+
+subgraph cluster_P403424356 {label="c";
+node [style=filled;];
+subgraph cluster_Z1393931310 {label="ARGMAX";
+"0.0" [shape=diamond]}subgraph cluster_Z1566723494 {label="ARGMIN";
+"0.0" [shape=diamond]}subgraph cluster_Z510113906 {label="MEMLIMIT";
+"64.0" [shape=diamond]}N1223685984 -> N1076835071;
+N1223685984 -> N1463757745;
+N1223685984[label="<";fillcolor="#0000ff";];
+N1076835071 -> N1525262377;
+N1076835071 -> N1837760739;
+N1076835071[label="*";fillcolor="#0000ff";];
+N1525262377 -> N1418428263;
+N1525262377 -> N2059904228;
+N1525262377[label=">";fillcolor="#0000ff";];
+N1418428263[label="28.7";fillcolor="#0000ff";];
+N2059904228[label="85.6";fillcolor="#0000ff";];
+N1837760739 -> N1836643189;
+N1837760739 -> N1355316001;
+N1837760739[label="|";fillcolor="#0000ff";];
+N1836643189[label="-81.4";fillcolor="#0000ff";];
+N1355316001[label="-83.5";fillcolor="#0000ff";];
+N1463757745 -> N1597462040;
+N1463757745 -> N403716510;
+N1463757745[label=">";fillcolor="#0000ff";];
+N1597462040 -> N853119666;
+N1597462040 -> N559670971;
+N1597462040[label="/";fillcolor="#0000ff";];
+N853119666[label="read";fillcolor="#0000ff";];
+N559670971[label="-72.4";fillcolor="#0000ff";];
+N403716510 -> N1144648478;
+N403716510 -> N1576861390;
+N403716510[label=":=";fillcolor="#0000ff";];
+N1144648478[label="49.7";fillcolor="#0000ff";];
+N1576861390[label="-76.1";fillcolor="#0000ff";];
+color=black;}}

@@ -1,0 +1,12 @@
+name test;
+cases from cases.txt;
+env genet from "genet.txt";
+inspect;
+//inspect genet;
+popsize curr 1000;
+popsize best 10;
+initpop curr ramped-and-a-half;
+fwd 5;
+stats;
+inject specimen 1 from population best to environment genet;
+inspect env genet;

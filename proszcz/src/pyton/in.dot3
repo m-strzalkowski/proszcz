@@ -1,0 +1,23 @@
+digraph G {
+
+subgraph cluster_P1622006612 {label="c";
+node [style=filled;];
+subgraph cluster_Z2008362258 {label="ARGMAX";
+"0.0" [shape=diamond]}subgraph cluster_Z760563749 {label="ARGMIN";
+"0.0" [shape=diamond]}subgraph cluster_Z1753447031 {label="MEMLIMIT";
+"64.0" [shape=diamond]}N1778535015 -> N2032251042;
+N1778535015 -> N24433162;
+N1778535015[label="|";fillcolor="#ff0000";];
+N2032251042 -> N1725097945;
+N2032251042 -> N519821334;
+N2032251042[label=":=";fillcolor="#ff0000";];
+N1725097945[label="read";fillcolor="#ff0000";];
+N519821334[label="59.4";fillcolor="#0000ff";];
+N24433162 -> N1781256139;
+N24433162 -> N1307096070;
+N24433162 -> N1014328909;
+N24433162[label="{}";fillcolor="#ff0000";];
+N1781256139[label="92.0";fillcolor="#ff0000";];
+N1307096070[label="76.7";fillcolor="#ff0000";];
+N1014328909[label="-95.3";fillcolor="#ff0000";];
+color=black;}}

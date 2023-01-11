@@ -1,0 +1,19 @@
+/*Czyta trzy liczby z wejścia, interpretuje je jako współczynniki równania kwadratowego i wypisuje dwa pierwiastki, albo dwa NaNy, jeśli delta<0*/
+{
+.a:=read;
+.b:=read;
+.c:=read;
+.d:=b*b-4*a*c;
+.d:=sqrt(d);
+if(d>0)then{
+    write((-b-d)/(2*a));
+    write((-b+d)/(2*a));
+}else{
+    .e:=0;
+    while(e<2)
+    {
+        write(NaN);
+        inc(.e);
+    };
+};
+}
