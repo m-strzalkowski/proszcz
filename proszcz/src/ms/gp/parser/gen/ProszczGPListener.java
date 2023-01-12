@@ -28,6 +28,16 @@ public interface ProszczGPListener extends ParseTreeListener {
 	 */
 	void exitInstrukcja(ProszczGPParser.InstrukcjaContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ProszczGPParser#nazwanapis}.
+	 * @param ctx the parse tree
+	 */
+	void enterNazwanapis(ProszczGPParser.NazwanapisContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ProszczGPParser#nazwanapis}.
+	 * @param ctx the parse tree
+	 */
+	void exitNazwanapis(ProszczGPParser.NazwanapisContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ProszczGPParser#echo}.
 	 * @param ctx the parse tree
 	 */
@@ -118,15 +128,25 @@ public interface ProszczGPListener extends ParseTreeListener {
 	 */
 	void exitFprzyst_klasa(ProszczGPParser.Fprzyst_klasaContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link ProszczGPParser#srodowisko}.
+	 * Enter a parse tree produced by {@link ProszczGPParser#wczytaj_srodowisko}.
 	 * @param ctx the parse tree
 	 */
-	void enterSrodowisko(ProszczGPParser.SrodowiskoContext ctx);
+	void enterWczytaj_srodowisko(ProszczGPParser.Wczytaj_srodowiskoContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link ProszczGPParser#srodowisko}.
+	 * Exit a parse tree produced by {@link ProszczGPParser#wczytaj_srodowisko}.
 	 * @param ctx the parse tree
 	 */
-	void exitSrodowisko(ProszczGPParser.SrodowiskoContext ctx);
+	void exitWczytaj_srodowisko(ProszczGPParser.Wczytaj_srodowiskoContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ProszczGPParser#zapisz_srodowisko}.
+	 * @param ctx the parse tree
+	 */
+	void enterZapisz_srodowisko(ProszczGPParser.Zapisz_srodowiskoContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ProszczGPParser#zapisz_srodowisko}.
+	 * @param ctx the parse tree
+	 */
+	void exitZapisz_srodowisko(ProszczGPParser.Zapisz_srodowiskoContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ProszczGPParser#listuj_srodowiska}.
 	 * @param ctx the parse tree
@@ -287,6 +307,36 @@ public interface ProszczGPListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitWstrzykniecie_osobnika_do_srodowiska(ProszczGPParser.Wstrzykniecie_osobnika_do_srodowiskaContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ProszczGPParser#ustawienie_wejsc}.
+	 * @param ctx the parse tree
+	 */
+	void enterUstawienie_wejsc(ProszczGPParser.Ustawienie_wejscContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ProszczGPParser#ustawienie_wejsc}.
+	 * @param ctx the parse tree
+	 */
+	void exitUstawienie_wejsc(ProszczGPParser.Ustawienie_wejscContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ProszczGPParser#we_stdin}.
+	 * @param ctx the parse tree
+	 */
+	void enterWe_stdin(ProszczGPParser.We_stdinContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ProszczGPParser#we_stdin}.
+	 * @param ctx the parse tree
+	 */
+	void exitWe_stdin(ProszczGPParser.We_stdinContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ProszczGPParser#we_tablica}.
+	 * @param ctx the parse tree
+	 */
+	void enterWe_tablica(ProszczGPParser.We_tablicaContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ProszczGPParser#we_tablica}.
+	 * @param ctx the parse tree
+	 */
+	void exitWe_tablica(ProszczGPParser.We_tablicaContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ProszczGPParser#waga_operatora_genetycznego}.
 	 * @param ctx the parse tree

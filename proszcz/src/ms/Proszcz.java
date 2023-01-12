@@ -166,14 +166,18 @@ public class Proszcz {
                 }
                 catch (ZdarzenieWykonania ex)
                 {
+
                     if(ex.getSeverity().worseOrEqual(WARN))
                     {
                         switch (ex.getMessage().toLowerCase(Locale.ROOT))
                         {
                             case "exit":
-                            case "halt": return;
+                            case "halt":
+                                stream_out.println("exitting...");
+                                return;
                         }
                     }
+                    System.err.println("INTERACTIVE CATCHED:"+ex.getSeverity());
                     ex.printStackTrace();
 
                 }

@@ -23,6 +23,12 @@ public interface ProszczGPVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitInstrukcja(ProszczGPParser.InstrukcjaContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ProszczGPParser#nazwanapis}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNazwanapis(ProszczGPParser.NazwanapisContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link ProszczGPParser#echo}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -77,11 +83,17 @@ public interface ProszczGPVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFprzyst_klasa(ProszczGPParser.Fprzyst_klasaContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link ProszczGPParser#srodowisko}.
+	 * Visit a parse tree produced by {@link ProszczGPParser#wczytaj_srodowisko}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitSrodowisko(ProszczGPParser.SrodowiskoContext ctx);
+	T visitWczytaj_srodowisko(ProszczGPParser.Wczytaj_srodowiskoContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ProszczGPParser#zapisz_srodowisko}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitZapisz_srodowisko(ProszczGPParser.Zapisz_srodowiskoContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ProszczGPParser#listuj_srodowiska}.
 	 * @param ctx the parse tree
@@ -178,6 +190,24 @@ public interface ProszczGPVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitWstrzykniecie_osobnika_do_srodowiska(ProszczGPParser.Wstrzykniecie_osobnika_do_srodowiskaContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ProszczGPParser#ustawienie_wejsc}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUstawienie_wejsc(ProszczGPParser.Ustawienie_wejscContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ProszczGPParser#we_stdin}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWe_stdin(ProszczGPParser.We_stdinContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ProszczGPParser#we_tablica}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWe_tablica(ProszczGPParser.We_tablicaContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link ProszczGPParser#waga_operatora_genetycznego}.
 	 * @param ctx the parse tree

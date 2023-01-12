@@ -2,18 +2,20 @@ package ms.gp.ewolucja;
 
 import ms.bledy.SyntaxErrorListener;
 import ms.drzewo.Węzeł;
+import ms.drzewo.operacje.losowe.IPodawaczDrzew;
 import ms.gp.parser.GPInterpreter;
 import ms.gp.parser.gen.ProszczGPLexer;
 import ms.gp.parser.gen.ProszczGPParser;
 import ms.gp.populacje.ZarządcaPopulacji;
 import ms.gp.przypadki.ZarządcaPrzypadków;
 import ms.gp.przystosowanie.FitnessFunction;
+import ms.gp.silniki.ZarządcaSilników;
 import ms.interpreter.Silnik;
-import ms.parser.proszczLexer;
+import ms.proces.Nazwa;
+import ms.proces.Proces;
 import ms.proces.strumienie.IStrumień;
 import ms.proces.strumienie.StrumieńZTablicą;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.Pair;
 import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.IOException;
@@ -24,13 +26,17 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.SplittableRandom;
 import java.util.Stack;
 
 import static java.lang.System.exit;
+import static ms.drzewo.operacje.losowe.RóżneLosowe.liczba_wezlow;
+import static ms.interpreter.Środowisko.domyślny_podawacz_drzew;
 
 public class Ewolutor {
     PrintStream wy = System.out;
     ArrayList<Historia> generacje = new ArrayList<>();
+    public int numer_generacji(){return generacje.size();}
     int numer_generacji_w_iteracji=0;
 
     double[][] fcases;//dane wejściowe
@@ -38,15 +44,18 @@ public class Ewolutor {
     int wielkosc_populacji=25000;
     Węzeł[] npop;//nowa populacja
     Węzeł[] spop;//stara populacja
-    ArrayList<Pair<Integer,Double>> wyniki;//indeks w populacji - wartości funkcji przystosowania
+    //ArrayList<Pair<Integer,Double>> wyniki;//indeks w populacji - wartości funkcji przystosowania
     Silnik skg;//silnik genetyczny
     boolean interaktywny=false;
     public ZarządcaPopulacji zpop = new ZarządcaPopulacji();
     public ZarządcaPrzypadków zcas = new ZarządcaPrzypadków();
+    public ZarządcaSilników zsil = new ZarządcaSilników();
+    public ZarządcaOperatorów zop = new ZarządcaOperatorów();
     FitnessFunction fprzyst;
     public Stack<GPInterpreter> interpretery = new Stack<>();
     public Ewolutor(){
         this.generacje.add(new Historia());//zaczynamy w pierwszej generacji
+        this.zop.buduj_prawdopodobieństwa();
     }
     public Ewolutor(PrintStream wy){
         this();
@@ -64,7 +73,9 @@ public class Ewolutor {
     public Path sciezka_pliku(String nazwa_pliku){return sciezka_pliku(NAZWA_ROBOCZEGO_KATALOGU,nazwa_pliku);}
     private Path sciezka_pliku(String nazwa_katalogu,String nazwa_pliku)
     {
-        Path filePath = Path.of(nazwa_katalogu+nazwa_pliku);
+        Path filePath;
+        if((filePath= Path.of(nazwa_pliku)).isAbsolute()){wy.println("detected absolute path:"+filePath); return filePath;}
+        filePath= Path.of(nazwa_katalogu+nazwa_pliku);
         String sciezka=null;
         try {
             sciezka = filePath.toAbsolutePath().toString();
@@ -121,7 +132,6 @@ public class Ewolutor {
     }
 
     public void wykonaj_tekst(String tekst,boolean interaktywny) {
-        boolean i=false;
         //ParseTree ptree = parsingProgramu(tekst);
         ParseTree ptree = parsingParametryczny(tekst, ProszczGPLexer.class, ProszczGPParser.class, "plik");
         if(ptree==null){if(!interaktywny){System.err.println("SWITCHING TO INTERACTIVE MODE"); interpretuj_stdin();}return;}//parsowanie sie ne powiodło
@@ -221,18 +231,180 @@ public class Ewolutor {
             }
             if(przyst_stop > min_przyst)
             {
-                wy.println("STOPPED, BEST SPECIMEN ATTAINED FITNESS LOWER THAN TARGET:"+ilosc_generacji);
+                wy.println("STOPPED, BEST SPECIMEN ATTAINED FITNESS LOWER THAN TARGET:"+ilosc_generacji); break;
             }
         }
     }
-    void następna()
+    public void następna(int ilosc_generacji)
     {
+        for(numer_generacji_w_iteracji=0; ;numer_generacji_w_iteracji++)
+        {
+            //3.Selekcja
+            //4.Rekombinacja i mutacja
+            następna(false);
+            if(numer_generacji_w_iteracji>=ilosc_generacji)
+            {
+                wy.println("STOPPED, EXCEEDED GIVEN GENERATION LIMIT:"+ilosc_generacji); break;
+            }
+        }
+        this.fprzyst.set_verbosity(false);
+    }
+    String NAZWA_AKTUALNEJ_POPULACJI = "curr";
+    public String NAZWA_PROCEDURY_GENETYCZNEJ = "main";
+    public String NAZWA_SILNIKA_EWOLUCJI = "genet";
+    int MAKS_DLUGOSC_WYJSCIA = 128;
+    public void następna(){następna(true);}
+    public void następna(boolean wypisywanie)
+    {
+        this.fprzyst.set_verbosity(wypisywanie);
         //Obliczenie wyników całej populacji
-        ewaluuj_populację();
+        Węzeł[] pop = this.zpop.populacje.get(NAZWA_AKTUALNEJ_POPULACJI);
+        if(pop==null){System.err.println("no population table.Stopped.");return;}
+        double[] wyniki = this.zpop.przystosowania.get(NAZWA_AKTUALNEJ_POPULACJI);
+        if(wyniki == null){wyniki = new double[pop.length]; this.zpop.przystosowania.put(NAZWA_AKTUALNEJ_POPULACJI,wyniki);}
+        if(this.zcas.cases==null){System.err.println("no cases Stopped.");return;}
+        Silnik silnik = this.zsil.silniki.get(NAZWA_SILNIKA_EWOLUCJI);
+        if(silnik==null){System.err.println("no env"+NAZWA_SILNIKA_EWOLUCJI+" Stopped.");return;}
+        ewaluacja_populacji(silnik,pop,0,pop.length,this.zcas.cases,new double[zcas.cases.length][MAKS_DLUGOSC_WYJSCIA],fprzyst,wyniki);
         //3.Selekcja
         //4.Rekombinacja i mutacja
+        Węzeł[] nowa_populacja = new Węzeł[pop.length];
+        selekcja_i_operatory(pop,nowa_populacja,0,pop.length,wyniki);
+        this.zpop.populacje.put(NAZWA_AKTUALNEJ_POPULACJI,nowa_populacja);
+        this.zpop.przystosowania.put(NAZWA_AKTUALNEJ_POPULACJI,wyniki);
+        wydobywanie_najlepszych(nowa_populacja,wyniki);
+        generacje.add(new Historia());
+        System.out.println("PASSING TO GENERATION "+numer_generacji());
     }
-    void ewaluuj_populację()
+
+
+    private void selekcja_i_operatory(Węzeł[] spop, Węzeł[] npop, int npop_start, int npop_end, double[] wyniki) {
+        //dla każdego miejsca w nowej populacji
+        IPodawaczDrzew drzewa = domyślny_podawacz_drzew;//na razie
+        int lewy,prawy;
+        int rozmiar_próbki = 2;//przy selekcji
+        for(int n=npop_start;n<npop.length;n++)
+        {
+            lewy = selekcja_turniejowa(spop,wyniki,rozmiar_próbki);
+            System.err.print(n);
+            switch(this.zop.losuj())
+            {
+                case CROSS:
+                    System.err.print("CROSS ");
+                    prawy = selekcja_turniejowa(spop,wyniki,rozmiar_próbki);
+                    npop[n] = drzewa.cross_dcpy(spop[lewy],null,spop[prawy],null);//TODO losowanie wewnątrz drzewa punktu
+                    break;
+                case SIMPLE_MUTATE:
+                    System.err.print("MUTATE ");
+                    npop[n] = drzewa.mutation_subtree(spop[lewy],5,null);
+                    break;
+                case TRANSFER:
+                    System.err.print("TRANSFER ");
+                    npop[n] = drzewa.deepcopy(spop[lewy],0);
+            }
+        }
+    }
+    SplittableRandom generator = new SplittableRandom();
+    //wbiera NAJMNIEJSZE wyniki
+    private int selekcja_turniejowa(Węzeł[] spop, double[] wyniki,int rozmiar_probki) {
+        Integer najlepszy = null; int r;
+        for(int i=0;i<rozmiar_probki;i++)
+        {
+            r = generator.nextInt(0,spop.length);
+            if(najlepszy == null || wyniki[r] < wyniki[najlepszy] )
+            {
+                najlepszy = r;
+            }
+        }
+        return najlepszy;
+    }
+
+    /**
+     * Ewaluacja wyznaczonego kawałka populacji i policzenie jego przystosowania za pomocą dostarczonej funkcji
+     * @param silnik Silnik, którego należy uzyć do obliczeń.
+     * @param pop tablica drzew - populacja. Ma miec długość tą samą co wyniki
+     * @param popstart indeks pierwszego osobnika liczonego
+     * @param popstop indeks, osobnika PRZED którym zatrzyma się liczenie
+     * @param fitcases dla każdego osobnika tablica wartości wejściowych. Ma miec długość tą samą co byfwy
+     * @param bufwy będzie uzuwana dla każdego osobnika jako tablica wartości wyjściowych per przypadek. ma miec wymiary [fitcases.length][MAKS_DLUGOSC_WYJSCIA]
+     * @param funkcja_przystosowania obiekt interpretujacy interfejs FitnessFunction gotowy wypluwać wartosci przystosowania
+     * @param wyniki tablica na wartości funkcji przystosowania dla każdego osobnika
+     */
+    void ewaluacja_populacji(Silnik silnik, Węzeł[] pop, int popstart, int popstop,double[][] fitcases, double[][] bufwy, FitnessFunction funkcja_przystosowania, double[] wyniki)
+    {
+        StrumieńZTablicą we = new StrumieńZTablicą();//
+        StrumieńZTablicą wy = new StrumieńZTablicą();//
+        Proces proces;
+        double wartość_zwracana;
+        funkcja_przystosowania.set_fitness_cases(fitcases);//funkcja przystosowania musi znać wejscia - podawane tu i wyjscia - podawane przy compute_fitness_of_outputs_for_cases
+        if(!ewaluacja_populacji_sprawdzania(pop,popstart,popstop,fitcases,bufwy,funkcja_przystosowania,wyniki)){throw new RuntimeException("unable to call ewaluacja_populacji");};
+        //Dla każdego osobnika w podanym zakresie
+        //p - numer osobnika, c - numer przypadku
+        int[] czasy = new int[fitcases.length];
+        int[] długości_wyjść = new int[fitcases.length];//może to głupie...
+        for(int p=popstart;p<popstop;p++)
+        {
+            //
+            proces = wstrzyknij_drzewo(pop[p],silnik,NAZWA_PROCEDURY_GENETYCZNEJ,we,wy);
+            StrumieńZTablicą wyjscie_osobnika = (StrumieńZTablicą) proces.daj_deskryptor(1);
+            for(int c=0;c<fitcases.length;c++)
+            {
+                //przestaw strumienie
+                przestaw_i_resetuj_strumienie(proces,fitcases[c],bufwy[c]);//czyta z fitcases[c] i pisze do bufwy[c]
+                try {
+                    wartość_zwracana = silnik.wykonaj(NAZWA_PROCEDURY_GENETYCZNEJ, null);
+                }
+                catch(RuntimeException ex){}
+                czasy[c] = silnik.liczba_wykonanch_wezłów;
+                długości_wyjść[c] = wyjscie_osobnika.ile_zapisano();
+            }
+            //policz wartośc funkcji przystosowania
+            wyniki[p] = funkcja_przystosowania.compute_fitness_of_outputs_for_cases(bufwy,długości_wyjść,liczba_wezlow(pop[p]),czasy);
+        }
+    }
+
+
+
+    /**
+     * @return Sprawdza, czy można wywołać ewaluacja_populacji z tymi parametrami
+     */
+    private boolean ewaluacja_populacji_sprawdzania(Węzeł[] pop, int popstart, int popstop, double[][] fitcases, double[/*fitcases.len*/][] bufwy, FitnessFunction funkcja_przystosowania, double[/*pop.length*/] wyniki) {
+        if(pop==null){System.err.println("no population table.Stopped.");return false;}
+        if(fitcases==null){System.err.println("no fitness cases.Stopped.");return false;}
+        if(bufwy==null){System.err.println("no output buffer.Stopped.");return false;}
+        if(funkcja_przystosowania==null){System.err.println("no fitness function.Stopped.");return false;}
+        if(wyniki==null){System.err.println("no results buffer.Stopped.");return false;}
+        for(int i=0; i<fitcases.length;i++) {if(fitcases[i]==null){System.err.println("Case"+i+"is null.Stopped.");return false;}}
+        for(int i=0; i<bufwy.length;i++) {if(bufwy[i]==null){System.err.println("Outbuf["+i+"]is null.Stopped.");return false;}}
+        if(pop.length!=wyniki.length){System.err.format("Population[%d] and results buffer[%d] have different lengths.",pop.length,wyniki.length);return false;}
+        if(fitcases.length!=bufwy.length){System.err.format("fitcases[%d] and output buffer[%d] have different lengths.",fitcases.length,bufwy.length);return false;}
+        return true;
+    }
+
+    /** Przestawia drzewo i strumienie dla danego silnika.
+     * @return
+     */
+    public Proces wstrzyknij_drzewo(Węzeł drzewo, Silnik silnik, String nazwa_procedury_genetycznej, IStrumień we, IStrumień wy) {
+        Nazwa n = silnik.główny.nazwy.get(nazwa_procedury_genetycznej);
+        if(!(n instanceof Proces)){System.err.println("Nazwa "+nazwa_procedury_genetycznej+":"+n.kod(silnik,true)); throw new RuntimeException("Name"+nazwa_procedury_genetycznej+"is not a process. Check environment file.");}
+        Proces proces = (Proces) n;
+        proces.drzewo = drzewo;
+        proces.ustaw_deskryptor((IStrumień) we,0);//TODO !!!!
+        proces.ustaw_deskryptor((IStrumień) wy,1);
+        return proces;
+    }
+    private boolean przestaw_i_resetuj_strumienie(Proces proces, double[] wejścia, double[] wyjścia) {
+        IStrumień wejscie = proces.daj_deskryptor(0);
+        IStrumień wyjscie = proces.daj_deskryptor(0);
+        if(!(wejscie instanceof StrumieńZTablicą) || !(wyjscie instanceof StrumieńZTablicą)){throw new RuntimeException("wong class of streams:"+wejscie.getClass()+","+wyjscie.getClass());}
+        StrumieńZTablicą we = (StrumieńZTablicą) wejscie;
+        StrumieńZTablicą wy = (StrumieńZTablicą) wyjscie;
+        we.tab = wejścia; we.MAX = wejścia.length; we.resetuj();
+        wy.tab = wyjścia; wy.MAX = wyjścia.length; wy.resetuj();
+        return true;
+    }
+
+    void ewaluuj_populację()//TODO skasować
     {
         if(fcases==null){System.out.println("no fitness cases.Stopped.");return;}
         if(spop==null){System.out.println("no population table.Stopped.");return;}
@@ -256,8 +428,69 @@ public class Ewolutor {
             }
         }
     }
-    void proc_interaktywna()
-    {
+    String NAZWA_POPULACJI_NAJLEPSZYCH = "best";
+    String NAZWA_NAJLEPSZEGO_OD_POCZATKU = "bestever";
+    private void wydobywanie_najlepszych(Węzeł[] pop,double[] fit) {
+        int ile=10;
+        ArrayList<Węzeł> najlepsze = new ArrayList<>();
+        ArrayList<Integer> indeksy = new ArrayList<>();
+        ArrayList<Integer> wart = new ArrayList<>();
+        double max=Double.NEGATIVE_INFINITY;
+        double poprzedni = Double.POSITIVE_INFINITY;
+        int wybierany=0;
+        for(int i=0;i<ile;i++)
+        {
+            for(int j=0;j<pop.length;j++)
+            {
+                if(fit[j]>max && fit[j]<poprzedni){wybierany=j;}
+            }
+            indeksy.add(wybierany);
+            poprzedni = wybierany;
+        }
+        Węzeł[] npop = new Węzeł[indeksy.size()];//najlepsze w tej generacji
+        double[] nfit = new double[indeksy.size()];
+        for(int i=0;i<npop.length;i++){npop[i] = pop[indeksy.get(i)]; nfit[i] = fit[indeksy.get(i)];}
+        zpop.populacje.put(NAZWA_POPULACJI_NAJLEPSZYCH,npop);
+        zpop.przystosowania.put(NAZWA_POPULACJI_NAJLEPSZYCH,nfit);
+        Węzeł[] najlepszy_historycznie_pop= zpop.populacje.get(NAZWA_NAJLEPSZEGO_OD_POCZATKU);
+        double[] najlepszy_historycznie_fit= zpop.przystosowania.get(NAZWA_NAJLEPSZEGO_OD_POCZATKU);
+        if(najlepszy_historycznie_fit==null|| najlepszy_historycznie_fit[0]<nfit[0]) {
+            //mamy lepszego w tej generacji
+            Węzeł[] win = new Węzeł[1]; win[0]=npop[0];
+            double[] winfit = new double[1]; winfit[0]=fit[0];
+            zpop.populacje.put(NAZWA_NAJLEPSZEGO_OD_POCZATKU,win);
+            zpop.przystosowania.put(NAZWA_NAJLEPSZEGO_OD_POCZATKU,winfit);
+        }
+    }
 
+    public void załaduj_funkcję_przystosowania(String nazwa_klasy, String nazwa_pliku) {
+        //Dodawanie
+        Class fclass=null;
+        Constructor<?> cons = null;
+        if(nazwa_pliku!=null){throw new RuntimeException("not implemented yet: załaduj_funkcję_przystosowania.nazwa_pliku");}
+        try {
+            fclass = Class.forName(nazwa_klasy);
+            System.out.println("Class = " + fclass.getName());
+        }
+        catch(ClassNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("Exception: " + e.toString());
+        }
+        if(fclass==null){throw new RuntimeException("fclass == null");}
+        try {
+            cons = fclass.getConstructor(new Class[0]);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            throw new RuntimeException("class doesn't have 0 parameter constructor");
+        }
+        FitnessFunction func=null;
+        try {
+            func = (FitnessFunction) cons.newInstance();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();return;
+        }
+        //if(func==null){  System.err.println("func==null"); exit(1);}
+        this.fprzyst = func;
+        wy.println("Successfully loaded fitness function from"+nazwa_klasy);
     }
 }

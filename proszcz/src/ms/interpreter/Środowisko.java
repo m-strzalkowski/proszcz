@@ -1,5 +1,7 @@
 package ms.interpreter;
 
+import ms.bledy.SemanticOccurence;
+import ms.bledy.ZdarzenieWykonania;
 import ms.drzewo.Węzeł;
 import ms.drzewo.operacje.losowe.IPodawaczDrzew;
 import ms.drzewo.operacje.losowe.IPodawaczWęzłów;
@@ -69,7 +71,8 @@ public class Środowisko {
 
         biblioteka_nazw.put("read", new FunkcjaWbudowana((t)->{return 0.0;},"read",0,0));
         biblioteka_nazw.put("write", new FunkcjaWbudowana((t)->{return 0.0;},"write/1",1,1));
-        biblioteka_nazw.put("exit", new FunkcjaWbudowana((t)->{return 0.0;},"exit",0,0));
+        biblioteka_nazw.put("exit", new FunkcjaWbudowana((t)->{throw new ZdarzenieWykonania(SemanticOccurence.Level.ERROR,null,-1,-1,"exit");
+        },"exit",0,0));
 
         //TU TAK NAPRAWDĘ OKREŚLA SIĘ NAZWY GRAMATYKI WIDOCZNE NA ZEWNĄTRZ:
         podst_generatory.put("plus",gen_plus);

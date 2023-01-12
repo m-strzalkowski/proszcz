@@ -10,6 +10,8 @@ import org.antlr.v4.runtime.CharStreams;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,13 +39,35 @@ public class ZarządcaSilników {
         if(s==null){wy.println("Initalizing new empty environment "+nazwa_silnika); s=inicjuj_pusty(nazwa_silnika);}
         Proszcz.interpretacja_interaktywna_do_n_pustych_linii(s,System.in, System.out,1024);
     }
-    public void zapisz_do_pliku(String nazwa_pop,String sciezka_pliku)
+    public void głęboka_kopia(String nazwa_oryginału, String nazwa_kopii)
     {
-
+        Silnik oryginał = silniki.get(nazwa_oryginału);
+        if(oryginał==null){System.err.println("error:environment named '"+nazwa_oryginału+"' does not exist");return;}
+        Silnik kopia = inicjuj_pusty(nazwa_kopii);
+        kopia.wykonaj_tekst(oryginał.główny.kod(oryginał,true));
     }
-    public void czytaj_z_pliku(String nazwa_pop,String sciezka_pliku)
+    public void zapisz_do_pliku(String nazwa_silnika,String sciezka_pliku)
     {
-
+        Silnik env = silniki.get(nazwa_silnika);
+        if(env==null){System.err.println("error:environment named '"+nazwa_silnika+"' does not exist");return;}
+        try {
+            var out = new PrintStream(sciezka_pliku);
+            String nazwa = sciezka_pliku.replaceAll(".*[/\\ ]","");
+            out.println("/*saved environment "+ nazwa_silnika+ " by ProszczGP (conforming to grammar proszcz.g4)*/");
+            out.println("/*brief (non recursive) definition: "+ env.główny.kod(env,false)+ " */");
+            out.println(env.główny.kod(env,true));
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+    public void czytaj_z_pliku(String nazwa_silnika,String sciezka_pliku)
+    {
+        Silnik env = silniki.get(nazwa_silnika);
+        if(env==null){env=inicjuj_pusty(nazwa_silnika);}
+        //wczytaj plik
+        String kod; try {kod = Files.readString(Path.of(sciezka_pliku));} catch (IOException e) {e.printStackTrace();return;}
+        env.wykonaj_tekst(kod);
     }
     public void listuj_silniki(PrintStream wy)
     {

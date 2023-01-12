@@ -11,10 +11,11 @@ import static java.lang.Double.NaN;
 
 //reprezentuje strumien doubli (we/wy).
 public class StrumieńZTablicą implements IStrumień{
-    final int MAX = 100;
+    public int MAX = 100;
     public double[] tab = new double[MAX];
     int itr = 0;//do czytania
     int itw = 0;//do pisania
+    public int ile_zapisano(){return itw;}
 
     public double czytaj()
     {
@@ -36,6 +37,12 @@ public class StrumieńZTablicą implements IStrumień{
         double tmp = tab[itr];
         itr = (itr + 1)%MAX;
         return tmp;
+    }
+
+    @Override
+    public boolean resetuj() {
+        itr=0;itw=0;
+        return true;
     }
 
     @Override

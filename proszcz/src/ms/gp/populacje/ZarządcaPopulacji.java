@@ -98,6 +98,7 @@ public class ZarządcaPopulacji {
             for (var tree:pop) {
                 out.print(tree.kodPodrzewa());out.print(";\n");
             }
+            out.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

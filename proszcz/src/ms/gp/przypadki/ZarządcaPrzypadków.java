@@ -4,10 +4,8 @@ import ms.bledy.SemanticOccurence;
 import ms.drzewo.Węzeł;
 import ms.gp.ewolucja.Ewolutor;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.PrintStream;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import static java.lang.Integer.max;
@@ -21,8 +19,40 @@ public class ZarządcaPrzypadków {
     {
         cases = switch (format){
             case TINYGP -> setup_fitness_tiny_gp(sciezka_pelna,null,"");
+            case  TYLKO_WEKTORY_WE-> czytaj_same_wektory_we(sciezka_pelna,false);
             default -> throw new IllegalStateException("Unexpected value: " + format);
         };
+    }
+    private double[][] czytaj_same_wektory_we(String sciezka_pelna,boolean zgub_ostatnia_kolumne)
+    {
+        ArrayList<double[]> listy = new ArrayList<double[]>();
+        String linia;
+        try {
+            BufferedReader we =
+                    new BufferedReader(
+                            new FileReader(sciezka_pelna));
+            while((linia = we.readLine())!=null)
+            {
+                ArrayList<Double> lista = new ArrayList<>();
+                var tokens = new StringTokenizer(linia);
+                while(tokens.hasMoreTokens())
+                {
+                    lista.add(Double.parseDouble(tokens.nextToken().trim()));
+                }
+                if(zgub_ostatnia_kolumne){lista.remove(lista.size()-1);}
+                double[] t=new double[lista.size()]; for(int i=0;i<t.length;i++) {t[i]=lista.get(i);}
+                listy.add(t);
+            }
+            double[][] wynik = new double[listy.size()][]; for(int j=0;j<wynik.length;j++) {wynik[j]=listy.get(j);}
+            return wynik;
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
     private double[][] setup_fitness_tiny_gp(String inname, String outname, String pred_col_name)
     {
@@ -33,8 +63,7 @@ public class ZarządcaPrzypadków {
 
             BufferedReader in =
                     new BufferedReader(
-                            new
-                                    FileReader(inname));
+                            new FileReader(inname));
             PrintStream out;
             if(outname==null)
             {out=System.out;}
@@ -129,7 +158,7 @@ public class ZarządcaPrzypadków {
             }
         }*/
         wy.format("== statistics ==\n");
-        wy.format("= printed fitness cases' length: min:%d average:%d max%d (among %d specimens) =\n",minim, ((double)srednia)/cases.length,maxim,w);
+        wy.format("= printed fitness cases' length: min:%d average:%f max%d (among %d specimens) =\n",minim, ((double)srednia)/cases.length,maxim,w);
         wy.format("==%d fitness cases in total==\n",cases.length);
     }
     public void pisz(PrintStream wy){pisz(wy,5,5);}

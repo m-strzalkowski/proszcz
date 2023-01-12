@@ -41,6 +41,18 @@ public class ProszczGPBaseListener implements ProszczGPListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterNazwanapis(ProszczGPParser.NazwanapisContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNazwanapis(ProszczGPParser.NazwanapisContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterEcho(ProszczGPParser.EchoContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -149,13 +161,25 @@ public class ProszczGPBaseListener implements ProszczGPListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSrodowisko(ProszczGPParser.SrodowiskoContext ctx) { }
+	@Override public void enterWczytaj_srodowisko(ProszczGPParser.Wczytaj_srodowiskoContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitSrodowisko(ProszczGPParser.SrodowiskoContext ctx) { }
+	@Override public void exitWczytaj_srodowisko(ProszczGPParser.Wczytaj_srodowiskoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterZapisz_srodowisko(ProszczGPParser.Zapisz_srodowiskoContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitZapisz_srodowisko(ProszczGPParser.Zapisz_srodowiskoContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -348,6 +372,42 @@ public class ProszczGPBaseListener implements ProszczGPListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitWstrzykniecie_osobnika_do_srodowiska(ProszczGPParser.Wstrzykniecie_osobnika_do_srodowiskaContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterUstawienie_wejsc(ProszczGPParser.Ustawienie_wejscContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitUstawienie_wejsc(ProszczGPParser.Ustawienie_wejscContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterWe_stdin(ProszczGPParser.We_stdinContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitWe_stdin(ProszczGPParser.We_stdinContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterWe_tablica(ProszczGPParser.We_tablicaContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitWe_tablica(ProszczGPParser.We_tablicaContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

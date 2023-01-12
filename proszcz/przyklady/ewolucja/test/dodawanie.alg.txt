@@ -1,0 +1,12 @@
+name dodawanie;
+echo "dodawanie";
+//cases from "dodawanie_krotkie.cases.txt" plain;
+cases from "sincos.dat" tinygp;
+popsize curr 500;
+initpop curr ramped-and-a-half 5;
+env genet from "dodawanie.env.proszcz.txt";
+fitfunc from class fitfunc.Dodawanie;
+fwd 5;
+writepop curr;
+inspect;
+echo "end dodawanie";

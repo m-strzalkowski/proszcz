@@ -10,6 +10,7 @@ public interface IStrumień {
     public void poKońcu(Consumer<Integer> zwrotne);
     public double czytaj_lub_nan();
     public double czytaj_cyklicznie();
+    public boolean resetuj();//jeśli to możliwe, wraca na początek
 
     /**Powoduje zsynchronizowanie z sekwencją wyjściową/wejściową
      * @return

@@ -49,6 +49,11 @@ public class StrumieńWyjsciowy implements IStrumień {
     }
 
     @Override
+    public boolean resetuj() {
+        return false;
+    }
+
+    @Override
     public boolean synchronizuj() {
         try {
             os.flush();

@@ -218,28 +218,68 @@ public class GPInterpreter extends ProszczGPBaseVisitor<Void> {
      * <p>The default implementation returns the result of calling
      * {@link #visitChildren} on {@code ctx}.</p>
      */
-    @Override public Void visitFunkcja_przystosowania(ProszczGPParser.Funkcja_przystosowaniaContext ctx) { return visitChildren(ctx); }
+    @Override public Void visitFunkcja_przystosowania(ProszczGPParser.Funkcja_przystosowaniaContext ctx) {
+        if(ctx.fprzyst_klasa()!=null)
+        {
+            visitFprzyst_klasa(ctx.fprzyst_klasa());
+        }
+        return null;
+    }
     /**
      * {@inheritDoc}
      *
      * <p>The default implementation returns the result of calling
      * {@link #visitChildren} on {@code ctx}.</p>
      */
-    @Override public Void visitFprzyst_klasa(ProszczGPParser.Fprzyst_klasaContext ctx) { return visitChildren(ctx); }
+    @Override public Void visitFprzyst_klasa(ProszczGPParser.Fprzyst_klasaContext ctx) {
+        String nazwa_klasy = tekstZJedynejNAZWYLubNAPISU(ctx.nazwanapis(0));
+        String nazwa_pliku = null;
+        if(ctx.nazwanapis().size()>1)
+        {
+            nazwa_pliku = tekstZJedynejNAZWYLubNAPISU(ctx.nazwanapis(1));
+        }
+        ew.załaduj_funkcję_przystosowania(nazwa_klasy,nazwa_pliku);
+        return null;
+    }
     /**
      * {@inheritDoc}
      *
      * <p>The default implementation returns the result of calling
      * {@link #visitChildren} on {@code ctx}.</p>
      */
-    @Override public Void visitSrodowisko(ProszczGPParser.SrodowiskoContext ctx) { return visitChildren(ctx); }
+    @Override public Void visitWczytaj_srodowisko(ProszczGPParser.Wczytaj_srodowiskoContext ctx) {
+        String srodowisko = tekstZJedynejNAZWYLubNAPISU(ctx.nazwanapis(0));
+        String plik = tekstZJedynejNAZWYLubNAPISU(ctx.nazwanapis(1));
+        String sciezka;
+        try {
+            sciezka = ew.sciezka_pliku(plik).toRealPath().toString();
+            System.out.format("Reading env %s from %s\n",srodowisko,sciezka);
+            ew.zsil.czytaj_z_pliku(srodowisko,sciezka);
+            System.out.println("Reading done.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    @Override public Void visitZapisz_srodowisko(ProszczGPParser.Zapisz_srodowiskoContext ctx) {
+        String srodowisko = tekstZJedynejNAZWYLubNAPISU(ctx.nazwanapis(0));
+        String plik = tekstZJedynejNAZWYLubNAPISU(ctx.nazwanapis(1));
+        String sciezka;
+        sciezka = ew.sciezka_pliku(plik).toAbsolutePath().toString();
+        System.out.format("Writing env %s from %s\n",srodowisko,sciezka);
+        ew.zsil.zapisz_do_pliku(srodowisko,sciezka);
+        System.out.println("Writing done.");
+        return null;
+    }
     /**
      * {@inheritDoc}
      *
      * <p>The default implementation returns the result of calling
      * {@link #visitChildren} on {@code ctx}.</p>
      */
-    @Override public Void visitListuj_srodowiska(ProszczGPParser.Listuj_srodowiskaContext ctx) { return visitChildren(ctx); }
+    @Override public Void visitListuj_srodowiska(ProszczGPParser.Listuj_srodowiskaContext ctx) {
+        ew.zsil.listuj_silniki(System.out);return null;
+    }
     /**
      * {@inheritDoc}
      *
@@ -312,7 +352,17 @@ public class GPInterpreter extends ProszczGPBaseVisitor<Void> {
      * <p>The default implementation returns the result of calling
      * {@link #visitChildren} on {@code ctx}.</p>
      */
-    @Override public Void visitNastepne(ProszczGPParser.NastepneContext ctx) { return visitChildren(ctx); }
+    @Override public Void visitNastepne(ProszczGPParser.NastepneContext ctx) {
+        int ile =0;
+        if(ctx.STALA().size()<1)
+        {
+            ew.następna(true);
+        }
+        else if(ctx.STALA().size()<2){
+            ew.następna((int)Double.parseDouble(ctx.STALA(0).getText()));
+        }
+        return null;
+    }
     /**
      * {@inheritDoc}
      *
@@ -326,7 +376,10 @@ public class GPInterpreter extends ProszczGPBaseVisitor<Void> {
      * <p>The default implementation returns the result of calling
      * {@link #visitChildren} on {@code ctx}.</p>
      */
-    @Override public Void visitNr_obecnej_generacji(ProszczGPParser.Nr_obecnej_generacjiContext ctx) { return visitChildren(ctx); }
+    @Override public Void visitNr_obecnej_generacji(ProszczGPParser.Nr_obecnej_generacjiContext ctx) {
+        System.out.println("IN GENERATION "+ew.numer_generacji());
+        return null;
+    }
     /**
      * {@inheritDoc}
      *
@@ -351,7 +404,11 @@ public class GPInterpreter extends ProszczGPBaseVisitor<Void> {
      * <p>The default implementation returns the result of calling
      * {@link #visitChildren} on {@code ctx}.</p>
      */
-    @Override public Void visitInspekcja_srodowiska(ProszczGPParser.Inspekcja_srodowiskaContext ctx) { return visitChildren(ctx); }
+    @Override public Void visitInspekcja_srodowiska(ProszczGPParser.Inspekcja_srodowiskaContext ctx) {
+        String nazwa = ctx.NAZWA().getText();
+        ew.zsil.inspekcja(nazwa,System.out);
+        return null;
+    }
     /**
      * {@inheritDoc}
      *

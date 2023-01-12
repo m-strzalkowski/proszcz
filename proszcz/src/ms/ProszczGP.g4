@@ -8,7 +8,8 @@ instrukcja: (
     |przypadki
     |pisz_przypadki
     |funkcja_przystosowania
-    |srodowisko
+    |wczytaj_srodowisko
+    |zapisz_srodowisko
     |listuj_srodowiska
     |rozmiar_populacji
     |inicjalizacja_populacji
@@ -26,6 +27,7 @@ instrukcja: (
     |waga_operatora_genetycznego
     |listuj_operatory_genetyczne
 ) EOS;
+nazwanapis:(NAPIS_DOSL|NAZWA);
 echo:'echo' (NAPIS_DOSL|NAZWA);
 ustaw_nazwe:'name' NAZWA;
 ustaw_katalog:'cd' (NAPIS_DOSL|NAZWA);
@@ -34,8 +36,9 @@ przypadki: 'cases' 'from' (NAPIS_DOSL|NAZWA) opcja_przypadkow*;
     opcja_przypadkow:('tinygp'|'plain');
 pisz_przypadki:'show' 'cases' (STALA/*od początku*/ ','? STALA/*od końca*/)?;
 funkcja_przystosowania: 'fitfunc' 'from' fprzyst_klasa;
-    fprzyst_klasa: 'class' NAZWA ('in' NAPIS_DOSL)?;
-srodowisko: 'env' NAZWA 'from' NAPIS_DOSL/*nazwa pliku*/;
+    fprzyst_klasa: 'class' nazwanapis ('in' nazwanapis)?;
+wczytaj_srodowisko: 'env' nazwanapis 'from' nazwanapis/*nazwa pliku*/;
+zapisz_srodowisko: 'env' nazwanapis 'to' nazwanapis/*nazwa pliku*/;
 listuj_srodowiska:'envs';
 rozmiar_populacji:'popsize' NAZWA STALA;
 inicjalizacja_populacji:'initpop' NAZWA typ=('grow'|'full'|'ramped-and-a-half'|'rah') STALA/*maks. głębokość*/;
@@ -44,7 +47,7 @@ zapis_populacji_gdzie:('to' (NAPIS_DOSL|NAZWA));
 odczyt_populacji:'readpop' NAZWA odczyt_populacji_gdzie;
 odczyt_populacji_gdzie:('from' (NAPIS_DOSL|NAZWA));
 listuj_populacje:'pops';
-nastepne:'fwd' STALA?;
+nastepne:'fwd' (STALA (','STALA)?)?;/*ile, do jakiej ewentualnie wartosci f przystosowania*/
 statystyki:'stats' STALA?/*od*/ STALA?/*do*/;
 nr_obecnej_generacji:'gen';
 inspekcja:'inspect';
@@ -54,6 +57,8 @@ zakoncz:'halt';
 wstrzykniecie_osobnika_do_srodowiska:
 ('inject' 'specimen' STALA 'from' 'population' NAZWA 'to' 'environment' NAZWA)
 |('inj' NAZWA ':'STALA '>' NAZWA);
+ustawienie_wejsc:('setinput' nazwanapis 'in' nazwanapis 'to' (we_stdin|we_tablica));
+we_stdin:'stdin'; we_tablica: STALA*;
 waga_operatora_genetycznego:('op'|'genetic-operator') NAZWA STALA zn=('%'|'‰');
 listuj_operatory_genetyczne:('ops'|'genetic-operators');
 
