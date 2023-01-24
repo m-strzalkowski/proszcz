@@ -179,7 +179,6 @@ public class KonstruktorProgramów extends proszczBaseVisitor<Węzeł> {
         //dla każdej nazwy przed ::=
         for (var nazwa_odwołania:nazwy)
         {
-            //System.err.println("NAZWA_ODWOLANIA:"+nazwa_odwołania);
             boolean akumulacja=false;//Przy ::= tworzymy nowy proces, przy ::+= dodajemy do niego
             if(nazwa_odwołania==null){akumulacja=true;}//bez nazwy - dla głównego zawsze akumulacja
             //Jeśli udało się policzyć i nie jest to główny proces
@@ -234,16 +233,15 @@ public class KonstruktorProgramów extends proszczBaseVisitor<Węzeł> {
                             var z = n.zawijanie_pamieci();
                             p.nazwy.put(NAZWA_LIMITU_PAMIECI, new Zmienna(Double.parseDouble(z.STALA().getText())));
                         }
-                        if(ctx.blok_procesowy().instrukcja_procesowa()!=null)
-                        {
-                            for(var ipr:ctx.blok_procesowy().instrukcja_procesowa())
-                            {
-                                visit(ipr);
-                            }
-                        }
                     }
                     //konstrukcja a~b,%c; - krótki zapis liczby parametrów,rozmiaru pamięci równoważny ARGMIN::=a;ARGMAX::=b; MEMLIMIT::=c;
-
+                    if(ctx.blok_procesowy().instrukcja_procesowa()!=null)
+                    {
+                        for(var ipr:ctx.blok_procesowy().instrukcja_procesowa())
+                        {
+                            visit(ipr);
+                        }
+                    }
                 }
 
                 //ustawia odpowiednie cherakterystyki procesu, w szczególnosci p.pam o wielkości w MEMLIMIT

@@ -266,8 +266,7 @@ public class Ewolutor {
         Silnik silnik = this.zsil.silniki.get(NAZWA_SILNIKA_EWOLUCJI);
         if(silnik==null){System.err.println("no env"+NAZWA_SILNIKA_EWOLUCJI+" Stopped.");return;}
         ewaluacja_populacji(silnik,pop,0,pop.length,this.zcas.cases,new double[zcas.cases.length][MAKS_DLUGOSC_WYJSCIA],fprzyst,wyniki);
-        //3.Selekcja
-        //4.Rekombinacja i mutacja
+        //3.Selekcja i Rekombinacja, mutacja
         Węzeł[] nowa_populacja = new Węzeł[pop.length];
         selekcja_i_operatory(pop,nowa_populacja,0,pop.length,wyniki,wypisywanie);
         this.zpop.populacje.put(NAZWA_AKTUALNEJ_POPULACJI,nowa_populacja);

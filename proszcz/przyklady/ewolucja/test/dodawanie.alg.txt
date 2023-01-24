@@ -6,7 +6,7 @@ popsize curr 1000;
 initpop curr ramped-and-a-half 5;
 env genet from "dodawanie.env.proszcz.txt";
 fitfunc from class fitfunc.Dodawanie;
-fwd 2;
+//fwd 2;
 writepop bestever to "dodawanie.bestever.txt";
 writepop curr to "dodawanie.curr10.txt";
 writepop curr;
