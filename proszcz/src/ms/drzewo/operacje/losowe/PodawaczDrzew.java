@@ -84,7 +84,7 @@ public class PodawaczDrzew implements IPodawaczDrzew{
     {
         //jeśli indeks == null - wylosuj
         if(poz_a==null){poz_a = (int) (Math.random() * liczba_wezlow(a));}
-        System.out.printf("cross_dcpy(Węzeł %s, Integer %d, Węzeł %s, Integer %d);",a.toString(),poz_a,b.toString(),poz_b);
+        //System.out.printf("cross_dcpy(Węzeł %s, Integer %d, Węzeł %s, Integer %d);",a.toString(),poz_a,b.toString(),poz_b);
         Węzeł kopia;
         try {
             Queue<Węzeł> kolejka = new ArrayDeque<Węzeł>();
@@ -120,7 +120,7 @@ public class PodawaczDrzew implements IPodawaczDrzew{
         if(offset_bfs==null){offset_bfs = (int) (Math.random() * liczba_wezlow(korzeń));}
         Węzeł kopia;
         try {
-            System.out.printf("deepcopy(Węzeł %s, Integer %d);", korzeń.toString(), offset_bfs);
+            //System.out.printf("deepcopy(Węzeł %s, Integer %d);", korzeń.toString(), offset_bfs);
             Queue<Węzeł> kolejka = new ArrayDeque<Węzeł>();
             kolejka.add(korzeń);
             int i = 0;

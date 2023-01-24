@@ -205,7 +205,7 @@ public class Ewolutor {
         if(tree==null){  System.err.println("tree==null"); exit(1);}
 //        System.err.println(syntaxErrorListener.getNumberOfErrors());
 //        System.err.println("|"+tekstProgramu+"|");
-        System.out.println("AST:"+tree.toStringTree(parser)); // print tree as text <label id="code.tour.main.7"/>
+        //System.out.println("AST:"+tree.toStringTree(parser)); // print tree as text <label id="code.tour.main.7"/>
         return tree;
     }
     void podstawowy_algorytm(int ilosc_generacji, double przyst_stop)
@@ -269,7 +269,7 @@ public class Ewolutor {
         //3.Selekcja
         //4.Rekombinacja i mutacja
         Węzeł[] nowa_populacja = new Węzeł[pop.length];
-        selekcja_i_operatory(pop,nowa_populacja,0,pop.length,wyniki);
+        selekcja_i_operatory(pop,nowa_populacja,0,pop.length,wyniki,wypisywanie);
         this.zpop.populacje.put(NAZWA_AKTUALNEJ_POPULACJI,nowa_populacja);
         this.zpop.przystosowania.put(NAZWA_AKTUALNEJ_POPULACJI,wyniki);
         wydobywanie_najlepszych(nowa_populacja,wyniki);
@@ -278,7 +278,7 @@ public class Ewolutor {
     }
 
 
-    private void selekcja_i_operatory(Węzeł[] spop, Węzeł[] npop, int npop_start, int npop_end, double[] wyniki) {
+    private void selekcja_i_operatory(Węzeł[] spop, Węzeł[] npop, int npop_start, int npop_end, double[] wyniki,boolean wypisywanie) {
         //dla każdego miejsca w nowej populacji
         IPodawaczDrzew drzewa = domyślny_podawacz_drzew;//na razie
         int lewy,prawy;
@@ -286,20 +286,20 @@ public class Ewolutor {
         for(int n=npop_start;n<npop.length;n++)
         {
             lewy = selekcja_turniejowa(spop,wyniki,rozmiar_próbki);
-            System.err.print(n);
+            //System.err.print(n);
             switch(this.zop.losuj())
             {
                 case CROSS:
-                    System.err.print("CROSS ");
+                    if(wypisywanie)System.err.print("CROSS ");
                     prawy = selekcja_turniejowa(spop,wyniki,rozmiar_próbki);
                     npop[n] = drzewa.cross_dcpy(spop[lewy],null,spop[prawy],null);//TODO losowanie wewnątrz drzewa punktu
                     break;
                 case SIMPLE_MUTATE:
-                    System.err.print("MUTATE ");
+                    if(wypisywanie)System.err.print("MUTATE ");
                     npop[n] = drzewa.mutation_subtree(spop[lewy],5,null);
                     break;
                 case TRANSFER:
-                    System.err.print("TRANSFER ");
+                    if(wypisywanie)System.err.print("TRANSFER ");
                     npop[n] = drzewa.deepcopy(spop[lewy],0);
             }
         }
@@ -437,6 +437,7 @@ public class Ewolutor {
         ArrayList<Integer> wart = new ArrayList<>();
         double max=Double.NEGATIVE_INFINITY;
         double poprzedni = Double.POSITIVE_INFINITY;
+        double srednia = 0.0;
         int wybierany=0;
         for(int i=0;i<ile;i++)
         {
@@ -447,6 +448,9 @@ public class Ewolutor {
             indeksy.add(wybierany);
             poprzedni = wybierany;
         }
+        double acum=0.0;
+        for(int j=0;j<pop.length;j++) {acum+=fit[j];}
+        srednia = acum/fit.length;
         Węzeł[] npop = new Węzeł[indeksy.size()];//najlepsze w tej generacji
         double[] nfit = new double[indeksy.size()];
         for(int i=0;i<npop.length;i++){npop[i] = pop[indeksy.get(i)]; nfit[i] = fit[indeksy.get(i)];}
@@ -461,6 +465,8 @@ public class Ewolutor {
             zpop.populacje.put(NAZWA_NAJLEPSZEGO_OD_POCZATKU,win);
             zpop.przystosowania.put(NAZWA_NAJLEPSZEGO_OD_POCZATKU,winfit);
         }
+        wy.format("avg %f best:%f best ever:%f\n",srednia,nfit[0],najlepszy_historycznie_fit==null?Double.NaN: najlepszy_historycznie_fit[0]);
+
     }
 
     public void załaduj_funkcję_przystosowania(String nazwa_klasy, String nazwa_pliku) {
