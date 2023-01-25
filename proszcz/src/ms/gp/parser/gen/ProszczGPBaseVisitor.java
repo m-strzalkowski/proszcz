@@ -81,6 +81,13 @@ public class ProszczGPBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitGeneruj_przypadki(ProszczGPParser.Generuj_przypadkiContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitPisz_przypadki(ProszczGPParser.Pisz_przypadkiContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}

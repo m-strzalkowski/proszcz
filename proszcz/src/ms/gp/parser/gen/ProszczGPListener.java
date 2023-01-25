@@ -98,6 +98,16 @@ public interface ProszczGPListener extends ParseTreeListener {
 	 */
 	void exitOpcja_przypadkow(ProszczGPParser.Opcja_przypadkowContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link ProszczGPParser#generuj_przypadki}.
+	 * @param ctx the parse tree
+	 */
+	void enterGeneruj_przypadki(ProszczGPParser.Generuj_przypadkiContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ProszczGPParser#generuj_przypadki}.
+	 * @param ctx the parse tree
+	 */
+	void exitGeneruj_przypadki(ProszczGPParser.Generuj_przypadkiContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ProszczGPParser#pisz_przypadki}.
 	 * @param ctx the parse tree
 	 */

@@ -125,6 +125,18 @@ public class ProszczGPBaseListener implements ProszczGPListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterGeneruj_przypadki(ProszczGPParser.Generuj_przypadkiContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGeneruj_przypadki(ProszczGPParser.Generuj_przypadkiContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterPisz_przypadki(ProszczGPParser.Pisz_przypadkiContext ctx) { }
 	/**
 	 * {@inheritDoc}

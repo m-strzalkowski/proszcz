@@ -6,6 +6,7 @@ instrukcja: (
     |ustaw_katalog
     |wykonaj_skrypt
     |przypadki
+    |generuj_przypadki
     |pisz_przypadki
     |funkcja_przystosowania
     |wczytaj_srodowisko
@@ -34,6 +35,7 @@ ustaw_katalog:'cd' (NAPIS_DOSL|NAZWA);
 wykonaj_skrypt:'exec' (NAPIS_DOSL|NAZWA);
 przypadki: 'cases' 'from' (NAPIS_DOSL|NAZWA) opcja_przypadkow*;
     opcja_przypadkow:('tinygp'|'plain');
+generuj_przypadki: 'gencases' '<'STALA ',' STALA ':' STALA '>'('*'|'x')STALA;//minwart,makswart,krok,liczba wymiarów - prosta kratka - iloczyn kartezjański
 pisz_przypadki:'show' 'cases' (STALA/*od początku*/ ','? STALA/*od końca*/)?;
 funkcja_przystosowania: 'fitfunc' 'from' fprzyst_klasa;
     fprzyst_klasa: 'class' nazwanapis ('in' nazwanapis)?;

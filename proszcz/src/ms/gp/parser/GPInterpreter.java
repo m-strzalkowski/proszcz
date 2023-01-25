@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static java.lang.System.exit;
+import static java.lang.System.out;
 import static ms.gp.przypadki.ZarządcaPrzypadków.FormatPrzypadkow.NIEROZPOZNANY;
 import static ms.gp.przypadki.ZarządcaPrzypadków.FormatPrzypadkow.TINYGP;
 
@@ -192,6 +193,16 @@ public class GPInterpreter extends ProszczGPBaseVisitor<Void> {
         ew.zcas.wczytaj(sciezka,format);
         return null;
     }
+    public static double wartSTALA(TerminalNode STALA)
+    {
+        return Double.parseDouble(STALA.getText());
+    }
+    @Override
+    public Void visitGeneruj_przypadki(ProszczGPParser.Generuj_przypadkiContext ctx) {
+        out.format("simple cases generation for minval:%f maxval:%f step:%f dimensions:%f\n",wartSTALA(ctx.STALA(0)),wartSTALA(ctx.STALA(1)),wartSTALA(ctx.STALA(2)),wartSTALA(ctx.STALA(3)));
+        ew.zcas.generuj(wartSTALA(ctx.STALA(0)),wartSTALA(ctx.STALA(1)),wartSTALA(ctx.STALA(2)),(int)wartSTALA(ctx.STALA(3))); return null;
+    }
+
     /**
      * {@inheritDoc}
      *

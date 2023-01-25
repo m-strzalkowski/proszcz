@@ -3,10 +3,14 @@ package ms.gp.przypadki;
 import ms.bledy.SemanticOccurence;
 import ms.drzewo.Węzeł;
 import ms.gp.ewolucja.Ewolutor;
+import org.apache.commons.lang.ArrayUtils;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.StringTokenizer;
+import java.util.function.Consumer;
 
 import static java.lang.Integer.max;
 import static java.lang.Integer.min;
@@ -22,6 +26,34 @@ public class ZarządcaPrzypadków {
             case  TYLKO_WEKTORY_WE-> czytaj_same_wektory_we(sciezka_pelna,false);
             default -> throw new IllegalStateException("Unexpected value: " + format);
         };
+    }
+    public void generuj(double wartosc_min, double wartosc_maks, double krok, int wymiary)
+    {
+        var newcases = new ArrayList<double[]>();
+        multi_iter((args)->{
+            newcases.add(args.stream().mapToDouble(Double::doubleValue).toArray());
+        },null,wartosc_min,wartosc_maks,krok,wymiary);
+        cases = newcases.toArray(new double[0][0]);
+    }
+    public static void multi_iter(Consumer<List<Double>> procedure, List<Double> args, double minval,double maxval, double step, int maxcount)
+    {
+        if(args==null){args = new ArrayList<>();}
+        if(args.size() == maxcount)
+        {
+            procedure.accept(args);
+        }
+        if(args.size()<1 || args.size()<maxcount)
+        {
+            args.add(0.0);
+            double val = minval;
+            for(int i=0;val<=maxval;i+=1)
+            {
+                val = minval + i*step;
+                args.set(args.size()-1, val);
+                multi_iter(procedure,args,minval,maxval,step,maxcount);
+            }
+            args.remove(args.size()-1);
+        }
     }
     private double[][] czytaj_same_wektory_we(String sciezka_pelna,boolean zgub_ostatnia_kolumne)
     {

@@ -65,6 +65,12 @@ public interface ProszczGPVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitOpcja_przypadkow(ProszczGPParser.Opcja_przypadkowContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link ProszczGPParser#generuj_przypadki}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGeneruj_przypadki(ProszczGPParser.Generuj_przypadkiContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link ProszczGPParser#pisz_przypadki}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
