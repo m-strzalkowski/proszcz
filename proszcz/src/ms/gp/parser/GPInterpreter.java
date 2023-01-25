@@ -452,4 +452,15 @@ public class GPInterpreter extends ProszczGPBaseVisitor<Void> {
      * {@link #visitChildren} on {@code ctx}.</p>
      */
     @Override public Void visitListuj_operatory_genetyczne(ProszczGPParser.Listuj_operatory_genetyczneContext ctx) { return visitChildren(ctx); }
+
+    @Override
+    public Void visitWydanie_programu(ProszczGPParser.Wydanie_programuContext ctx) {
+        String populacja = tekstZJedynejNAZWYLubNAPISU(ctx.nazwanapis(0));
+        int indeks_w_populacji =(int)wartSTALA(ctx.STALA());
+        String środowisko = tekstZJedynejNAZWYLubNAPISU(ctx.nazwanapis(1));
+        String ścieżka = tekstZJedynejNAZWYLubNAPISU(ctx.nazwanapis(2));
+        out.format("release specimen %d of population %s in environment %s to file:%s\n",indeks_w_populacji,populacja,środowisko,ścieżka);
+        ew.wydaj_osobnika_jako_program_w_pliku(populacja,indeks_w_populacji,środowisko,ścieżka);
+        return null;
+    }
 }

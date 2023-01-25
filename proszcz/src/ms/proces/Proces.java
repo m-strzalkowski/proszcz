@@ -9,18 +9,17 @@ import ms.proces.strumienie.IStrumień;
 import ms.proces.strumienie.StrumieńWejściowy;
 import ms.proces.strumienie.StrumieńWyjsciowy;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static java.lang.Double.NaN;
+import static ms.Tablice.SHARED_STDIN_SCANNER;
 import static ms.drzewo.Definicje.*;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class Proces implements Nazwa{
     public Proces(Węzeł drzewo){
         this.drzewo = drzewo;
-        dodaj_deskryptor(new StrumieńWejściowy(System.in));//0 - stdin
+        dodaj_deskryptor(new StrumieńWejściowy(SHARED_STDIN_SCANNER()));//0 - stdin
         dodaj_deskryptor(new StrumieńWyjsciowy(System.out));//1 - stdout
         dodaj_deskryptor(new StrumieńWyjsciowy(System.err));//2 - stderr
     }
@@ -183,7 +182,7 @@ public class Proces implements Nazwa{
             sb.append(NAWIAS_ANONIM_LEWY);
             for(int i=0;i<=ost;i++)
             {
-                sb.append(pam[i]).append(" ");
+                sb.append(Double.isFinite(pam[i])?pam[i]:"0.0/*inf/nan*/").append(" ");
             }
             sb.append(NAWIAS_ANONIM_PRAWY);
             return sb.toString();
@@ -238,6 +237,7 @@ public class Proces implements Nazwa{
         _argcmin = (int)(this.nazwy.get(NAZWA_ARGMIN).policz(s));
         _argcmax = (int)(this.nazwy.get(NAZWA_ARGMAX).policz(s));
         if(this.pam==null || this.pam.length != zawijanie){rezerwuj_lokalną_pamięć(zawijanie);}
+        Arrays.fill(this.pam,0);
     }
     //public double wykonaj(){return NaN;}
     public double ostatni_wynik = NaN;

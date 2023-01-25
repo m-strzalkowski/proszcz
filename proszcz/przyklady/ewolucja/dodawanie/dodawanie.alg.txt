@@ -1,0 +1,16 @@
+name dodawanie;
+echo "dodawanie";
+//cases from "dodawanie_krotkie.cases.txt" plain;
+env genet from "dodawanie.env.proszcz.txt";//na początku, by inicjalizacja zaszła poprawnie
+gencases <0,10:1>* 2;
+popsize curr 1500;
+initpop curr ramped-and-a-half 4;
+fitfunc from class fitfunc.Dodawanie;
+writepop curr to "dodawanie.curr0.txt";
+fwd 20;
+writepop bestever to "dodawanie.bestever.txt";
+writepop curr to "dodawanie.curr10.txt";
+//release bestever: 0 @ genet to "./rozw/01.proszcz";
+//writepop curr;
+inspect;
+echo "end dodawanie";

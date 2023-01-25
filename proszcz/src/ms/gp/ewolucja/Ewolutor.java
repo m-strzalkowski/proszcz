@@ -14,10 +14,14 @@ import ms.interpreter.Silnik;
 import ms.proces.Nazwa;
 import ms.proces.Proces;
 import ms.proces.strumienie.IStrumień;
+import ms.proces.strumienie.StrumieńWejściowy;
+import ms.proces.strumienie.StrumieńWyjsciowy;
 import ms.proces.strumienie.StrumieńZTablicą;
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
+import sun.misc.Signal;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Constructor;
@@ -30,6 +34,8 @@ import java.util.SplittableRandom;
 import java.util.Stack;
 
 import static java.lang.System.exit;
+import static java.lang.System.out;
+import static ms.Tablice.SHARED_STDIN_SCANNER;
 import static ms.drzewo.operacje.losowe.RóżneLosowe.liczba_wezlow;
 import static ms.interpreter.Środowisko.domyślny_podawacz_drzew;
 
@@ -122,7 +128,7 @@ public class Ewolutor {
     }*/
     public void interpretuj_stdin()
     {
-        Scanner scanner = new Scanner(System.in);
+        Scanner scanner = SHARED_STDIN_SCANNER();//new Scanner(System.in);
         while(scanner.hasNextLine())
         {
             String linia = scanner.nextLine();
@@ -235,8 +241,24 @@ public class Ewolutor {
             }
         }
     }
+    public boolean pracuje=false;
+    public boolean ma_przestać=false;
     public void następna(int ilosc_generacji)
     {
+        /*Thread thread = new Thread(){
+            public void run(){
+                System.out.println("");
+            }
+            thread.start();
+        };*/
+        pracuje=true;
+        ma_przestać=false;
+        Signal.handle(new Signal("INT"),  // SIGINT
+                signal -> {
+                    System.out.println("Interrupted by Ctrl+C");
+                    if(pracuje){ma_przestać=true;}else{throw new RuntimeException("Interrupted by Ctrl+C");}
+                });
+
         for(numer_generacji_w_iteracji=0; ;numer_generacji_w_iteracji++)
         {
             //3.Selekcja
@@ -246,8 +268,11 @@ public class Ewolutor {
             {
                 wy.println("STOPPED, EXCEEDED GIVEN GENERATION LIMIT:"+ilosc_generacji); break;
             }
+            if(ma_przestać){wy.println("STOPPED AFTER FINISHING GENERATION, PER USER INTERRUPT:"+ilosc_generacji); break;}
         }
         this.fprzyst.set_verbosity(false);
+        pracuje = false;
+        //thread.interrupt();
     }
     String NAZWA_AKTUALNEJ_POPULACJI = "curr";
     public String NAZWA_PROCEDURY_GENETYCZNEJ = "main";
@@ -276,21 +301,20 @@ public class Ewolutor {
         System.out.println("PASSING TO GENERATION "+numer_generacji());
     }
 
-
+    int ROZMIAR_TURNIEJU = 5;
     private void selekcja_i_operatory(Węzeł[] spop, Węzeł[] npop, int npop_start, int npop_end, double[] wyniki,boolean wypisywanie) {
         //dla każdego miejsca w nowej populacji
         IPodawaczDrzew drzewa = domyślny_podawacz_drzew;//na razie
         int lewy,prawy;
-        int rozmiar_próbki = 2;//przy selekcji
         for(int n=npop_start;n<npop.length;n++)
         {
-            lewy = selekcja_turniejowa(spop,wyniki,rozmiar_próbki);
+            lewy = selekcja_turniejowa(spop,wyniki,ROZMIAR_TURNIEJU);
             //System.err.print(n);
             switch(this.zop.losuj())
             {
                 case CROSS:
                     if(wypisywanie)System.err.print("CROSS ");
-                    prawy = selekcja_turniejowa(spop,wyniki,rozmiar_próbki);
+                    prawy = selekcja_turniejowa(spop,wyniki,ROZMIAR_TURNIEJU);
                     npop[n] = drzewa.cross_dcpy(spop[lewy],null,spop[prawy],null);//TODO losowanie wewnątrz drzewa punktu
                     break;
                 case SIMPLE_MUTATE:
@@ -384,7 +408,7 @@ public class Ewolutor {
      * @return
      */
     public Proces wstrzyknij_drzewo(Węzeł drzewo, Silnik silnik, String nazwa_procedury_genetycznej, IStrumień we, IStrumień wy) {
-        Nazwa n = silnik.główny.nazwy.get(nazwa_procedury_genetycznej);
+        Nazwa n = (nazwa_procedury_genetycznej==null) ? silnik.główny : silnik.główny.nazwy.get(nazwa_procedury_genetycznej);
         if(!(n instanceof Proces)){System.err.println("Nazwa "+nazwa_procedury_genetycznej+":"+n.kod(silnik,true)); throw new RuntimeException("Name"+nazwa_procedury_genetycznej+"is not a process. Check environment file.");}
         Proces proces = (Proces) n;
         proces.drzewo = drzewo;
@@ -394,7 +418,7 @@ public class Ewolutor {
     }
     private boolean przestaw_i_resetuj_strumienie(Proces proces, double[] wejścia, double[] wyjścia) {
         IStrumień wejscie = proces.daj_deskryptor(0);
-        IStrumień wyjscie = proces.daj_deskryptor(0);
+        IStrumień wyjscie = proces.daj_deskryptor(1);
         if(!(wejscie instanceof StrumieńZTablicą) || !(wyjscie instanceof StrumieńZTablicą)){throw new RuntimeException("wong class of streams:"+wejscie.getClass()+","+wyjscie.getClass());}
         StrumieńZTablicą we = (StrumieńZTablicą) wejscie;
         StrumieńZTablicą wy = (StrumieńZTablicą) wyjscie;
@@ -434,12 +458,14 @@ public class Ewolutor {
         ArrayList<Węzeł> najlepsze = new ArrayList<>();
         ArrayList<Integer> indeksy = new ArrayList<>();
         ArrayList<Integer> wart = new ArrayList<>();
+        //wybierz ile najlepszych osobników z populacji
         double max=Double.NEGATIVE_INFINITY;
         double poprzedni = Double.POSITIVE_INFINITY;
         double srednia = 0.0;
         int wybierany=0;
         for(int i=0;i<ile;i++)
         {
+            //Z całej populacji wybierz lepszego od poprzedniego najlepszego
             for(int j=0;j<pop.length;j++)
             {
                 if(fit[j]>max && fit[j]<poprzedni){wybierany=j;}
@@ -447,18 +473,19 @@ public class Ewolutor {
             indeksy.add(wybierany);
             poprzedni = wybierany;
         }
-        double acum=0.0;
-        for(int j=0;j<pop.length;j++) {acum+=fit[j];}
-        srednia = acum/fit.length;
+        double acum=0.0; int wyłączone_ze_sredniej=0;
+        for(int j=0;j<pop.length;j++) {if(fit[j]<Double.MAX_VALUE){acum+=fit[j];}else{wyłączone_ze_sredniej++;}}
+        srednia = acum/(fit.length-wyłączone_ze_sredniej);
         Węzeł[] npop = new Węzeł[indeksy.size()];//najlepsze w tej generacji
         double[] nfit = new double[indeksy.size()];
-        for(int i=0;i<npop.length;i++){npop[i] = pop[indeksy.get(i)]; nfit[i] = fit[indeksy.get(i)];}
+        for(int i=0;i<npop.length;i++){npop[i] = pop[indeksy.get(i)]; nfit[i] = fit[indeksy.get(i)];}//kopiowanie
         zpop.populacje.put(NAZWA_POPULACJI_NAJLEPSZYCH,npop);
         zpop.przystosowania.put(NAZWA_POPULACJI_NAJLEPSZYCH,nfit);
-        Węzeł[] najlepszy_historycznie_pop= zpop.populacje.get(NAZWA_NAJLEPSZEGO_OD_POCZATKU);
+       // Węzeł[] najlepszy_historycznie_pop= zpop.populacje.get(NAZWA_NAJLEPSZEGO_OD_POCZATKU);
         double[] najlepszy_historycznie_fit= zpop.przystosowania.get(NAZWA_NAJLEPSZEGO_OD_POCZATKU);
-        if(najlepszy_historycznie_fit==null|| najlepszy_historycznie_fit[0]<nfit[0]) {
+        if(najlepszy_historycznie_fit==null|| najlepszy_historycznie_fit[0]>nfit[0]) {
             //mamy lepszego w tej generacji
+            wy.format("got better best specimen:%f than prevoius:%f\n",fit[0],najlepszy_historycznie_fit==null?Double.NaN:najlepszy_historycznie_fit[0]);
             Węzeł[] win = new Węzeł[1]; win[0]=npop[0];
             double[] winfit = new double[1]; winfit[0]=fit[0];
             zpop.populacje.put(NAZWA_NAJLEPSZEGO_OD_POCZATKU,win);
@@ -497,5 +524,19 @@ public class Ewolutor {
         //if(func==null){  System.err.println("func==null"); exit(1);}
         this.fprzyst = func;
         wy.println("Successfully loaded fitness function from"+nazwa_klasy);
+    }
+
+    public void wydaj_osobnika_jako_program_w_pliku(String populacja, int indeks_w_populacji, String środowisko, String ścieżka) {
+        try {
+
+            var out = new PrintStream(sciezka_pliku(ścieżka).toAbsolutePath().toString());
+            Węzeł[] pop = this.zpop.populacje.get(populacja);
+            Węzeł drzewo = pop[indeks_w_populacji];
+            Silnik silnik = this.zsil.silniki.get(środowisko);
+            wstrzyknij_drzewo(drzewo,silnik,NAZWA_PROCEDURY_GENETYCZNEJ,new StrumieńWejściowy(SHARED_STDIN_SCANNER()),new StrumieńWyjsciowy(System.out));
+            out.print(silnik.zwróćKod());
+            out.print("* main;\n\n\n");
+            out.close();
+        } catch (FileNotFoundException e){e.printStackTrace();}
     }
 }

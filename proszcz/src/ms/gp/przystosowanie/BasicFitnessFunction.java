@@ -42,7 +42,7 @@ public abstract class BasicFitnessFunction implements FitnessFunction{
             System.out.format("case:%d\n", index);
             System.out.print("\ninputs:");for (int i = 0; i < fitcases[index].length; i++) {System.out.format("%f ", fitcases[index][i]);}
             System.out.print("\nexpect:");for (int i = 0; i < expected_outputs[index].length; i++) {System.out.format("%f ", expected_outputs[index][i]);}
-            System.out.print("\noutput:");for (int i = 0; i < outlen; i++) {System.out.format("%f ", out[i]);}
+            System.out.format("\noutput[%d]:",outlen);for (int i = 0; i < outlen; i++) {System.out.format("%f ", out[i]);}
         }
         double fit = simple_vector_distance(expected_outputs[index],expected_outputs[index].length, out,outlen);
         if(verbosity)System.out.format("\nfitness for case %d:%f\n",index,fit);
@@ -65,6 +65,7 @@ public abstract class BasicFitnessFunction implements FitnessFunction{
         if(verbosity)System.out.format("CASE:%d outs\n",outs.length);
         double computed_fitness = fitness_as_mean(outs,outlens);
         if(tree_size>100){computed_fitness *= tree_size/100.0;}
+        if(!Double.isFinite(computed_fitness)){computed_fitness = Double.MAX_VALUE;}
         if(verbosity)System.out.format("FITNESS:%f\n",computed_fitness);
         return computed_fitness;
     }

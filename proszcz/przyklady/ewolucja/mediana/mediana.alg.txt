@@ -1,0 +1,15 @@
+name dodawanie;
+echo "dodawanie";
+//cases from "dodawanie_krotkie.cases.txt" plain;
+env genet from "mediana.env.proszcz.txt";//na początku, by inicjalizacja zaszła poprawnie
+gencases <0,10:1>* 2;
+popsize curr 1500;
+initpop curr ramped-and-a-half 4;
+fitfunc from class fitfunc.Dodawanie;
+writepop curr to "pop.curr0.txt";
+fwd 20;
+writepop bestever to "pop.bestever.txt";
+writepop curr to "pop.curr10.txt";
+//writepop curr;
+inspect;
+echo "end dodawanie";

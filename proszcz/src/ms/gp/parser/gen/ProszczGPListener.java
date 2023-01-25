@@ -367,4 +367,14 @@ public interface ProszczGPListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitListuj_operatory_genetyczne(ProszczGPParser.Listuj_operatory_genetyczneContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link ProszczGPParser#wydanie_programu}.
+	 * @param ctx the parse tree
+	 */
+	void enterWydanie_programu(ProszczGPParser.Wydanie_programuContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link ProszczGPParser#wydanie_programu}.
+	 * @param ctx the parse tree
+	 */
+	void exitWydanie_programu(ProszczGPParser.Wydanie_programuContext ctx);
 }

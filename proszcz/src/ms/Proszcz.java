@@ -140,7 +140,10 @@ public class Proszcz {
 
     public static void interpretacja_interaktywna_do_n_pustych_linii(Silnik silnik,InputStream input, PrintStream stream_out,int maks_puste_linie) {
         if(silnik ==null){silnik = new Silnik(stream_out);}
-        var scanner = new Scanner(input);
+        Scanner scanner;
+        if(input == System.in){scanner = SHARED_STDIN_SCANNER();}
+        else{scanner = new Scanner(input);}
+        System.err.println(input);
         StringBuilder sb = new StringBuilder();
         //wczytuje wiersze z wejścia, jeśli napotka pusty wiersz, wykonuje to, co wczytał, jeśli dwa puste - kończy.
         int pustewiersze=0;
@@ -156,10 +159,10 @@ public class Proszcz {
                 pustewiersze=0;
                 //wykonaj komendę
                 try {
-                    System.out.println(sb.toString());
+                    //System.out.println(sb.toString());
 
                     silnik.wykonaj_tekst(sb.toString());
-
+                    stream_out.println("/*done*/");
                     //if(interaktywny){silnik.wykonaj_tekst("ls LASTRET");}
                     //if(pokazywanie){silnik.pokażDrzewo();}
                     //System.out.println( silnik.zwróćKod());

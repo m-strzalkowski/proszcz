@@ -264,4 +264,11 @@ public class ProszczGPBaseVisitor<T> extends AbstractParseTreeVisitor<T> impleme
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitListuj_operatory_genetyczne(ProszczGPParser.Listuj_operatory_genetyczneContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitWydanie_programu(ProszczGPParser.Wydanie_programuContext ctx) { return visitChildren(ctx); }
 }

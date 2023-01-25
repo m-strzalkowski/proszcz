@@ -53,10 +53,10 @@ public class FunkcjaWbudowana implements Nazwa{
 
     @Override
     public String kod(Silnik s,boolean czy_rekursywnie_w_głąb) {
-        return "/*built in function "+nazwa_funkcji_wbudowanej+"*/";
+        return "/*built in function "+nazwa_funkcji_wbudowanej+"*/0;use "+nazwa_funkcji_wbudowanej;
     }
     public String kod() {
-        return "/*built in function "+nazwa_funkcji_wbudowanej+"*/";
+        return kod(null,true);
     }
 
     @Override

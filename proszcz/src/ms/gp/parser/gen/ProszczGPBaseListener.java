@@ -444,6 +444,18 @@ public class ProszczGPBaseListener implements ProszczGPListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitListuj_operatory_genetyczne(ProszczGPParser.Listuj_operatory_genetyczneContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterWydanie_programu(ProszczGPParser.Wydanie_programuContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitWydanie_programu(ProszczGPParser.Wydanie_programuContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

@@ -1,0 +1,4 @@
+name test;
+echo "Test 1";
+exec "ujemne0.alg.txt";
+echo "Ending Test1";

@@ -1,0 +1,1 @@
+(/ARGMAX::=0.0;exit::=/*built in function exit*/0;use exit;ARGMIN::=0.0;MEMLIMIT::=64.0;main::=(/ARGMAX::=0.0;a::=3.0;ARGMIN::=0.0;MEMLIMIT::=4.0;\) ((-(-29.0)|while((read!~=read))[(read~=read)]<[-49.0])*73.0) (#0.0/*inf/nan*/ 0.0/*inf/nan*/ 0.0/*inf/nan*/ 0.0/*inf/nan*/ #);\) 0.0 * main;

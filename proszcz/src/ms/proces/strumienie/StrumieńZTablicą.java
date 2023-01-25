@@ -66,6 +66,7 @@ public class StrumieńZTablicą implements IStrumień{
     //true, jeśli da sie pisać
     public boolean pisz(double co)
     {
+        //System.out.format("%f@%d ",co,itw);//TODO skasować
         if(itw >= MAX)
             return false;
         tab[itw++] = co;

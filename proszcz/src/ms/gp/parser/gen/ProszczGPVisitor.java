@@ -226,4 +226,10 @@ public interface ProszczGPVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitListuj_operatory_genetyczne(ProszczGPParser.Listuj_operatory_genetyczneContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link ProszczGPParser#wydanie_programu}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWydanie_programu(ProszczGPParser.Wydanie_programuContext ctx);
 }

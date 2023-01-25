@@ -1,0 +1,4 @@
+name test;
+echo "Test 1";
+exec "mediana.alg.txt";
+echo "Ending Test1";

@@ -4,15 +4,20 @@ import java.io.InputStream;
 import java.util.Scanner;
 import java.util.function.Consumer;
 
+import static ms.Tablice.SHARED_STDIN_SCANNER;
+
 public class StrumieńWejściowy implements IStrumień {
     InputStream in;
     Scanner scanner;
-
-    public StrumieńWejściowy(InputStream in) {
+    /*public StrumieńWejściowy(InputStream in) {
         this.in = in;
         scanner = new Scanner(in);
+    }*/
+    public StrumieńWejściowy(Scanner scanner)
+    {
+        if(scanner==null){this.scanner=SHARED_STDIN_SCANNER();}
+        else{this.scanner=scanner;}
     }
-
     @Override
     public boolean pisz(double co) {
         throw new RuntimeException("STREAM IS READ ONLY:"+in.toString());
@@ -42,7 +47,7 @@ public class StrumieńWejściowy implements IStrumień {
 
     @Override
     public double czytaj_lub_nan() {
-        //System.out.print("type a double>");
+        System.out.print("type a double>");
         if (scanner.hasNextDouble())
         {
             return scanner.nextDouble();

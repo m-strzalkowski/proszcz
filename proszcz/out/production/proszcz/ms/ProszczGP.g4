@@ -27,6 +27,7 @@ instrukcja: (
     |wstrzykniecie_osobnika_do_srodowiska
     |waga_operatora_genetycznego
     |listuj_operatory_genetyczne
+    |wydanie_programu
 ) EOS;
 nazwanapis:(NAPIS_DOSL|NAZWA);
 echo:'echo' (NAPIS_DOSL|NAZWA);
@@ -63,6 +64,8 @@ ustawienie_wejsc:('setinput' nazwanapis 'in' nazwanapis 'to' (we_stdin|we_tablic
 we_stdin:'stdin'; we_tablica: STALA*;
 waga_operatora_genetycznego:('op'|'genetic-operator') NAZWA STALA zn=('%'|'‰');
 listuj_operatory_genetyczne:('ops'|'genetic-operators');
+//release population:index @ envirinment to filepath
+wydanie_programu: 'release' nazwanapis ':'STALA '@' nazwanapis 'to' nazwanapis;
 
 EOS:';';//END OF STATEMENT
 NAZWA:[A-Za-z]([A-Za-z0-9_/.])*;

@@ -41,6 +41,7 @@ public class ZarządcaPopulacji {
     {
         int i=0,w=0;
         Węzeł[] pop = populacje.get(nazwa_pop);
+        double[] wyniki = przystosowania.get(nazwa_pop);
         if(pop==null){wy.println("error:population named '"+nazwa_pop+"' does not exist");return;}
         wy.format("==POPULATION %s==\n",nazwa_pop);
         int k= min(od_poczatku, pop.length);
@@ -60,8 +61,9 @@ public class ZarządcaPopulacji {
             srednia+=wielkosc;
             minim = min(minim,wielkosc);
             maxim = max(maxim,wielkosc);
+            double wynik = wyniki==null?Double.NaN:wyniki[i];
             w++;
-            wy.format("%d[%d]:%s\n",i,wielkosc,reprezentacja);
+            wy.format("%d[%d][@%f]:%s\n",i,wielkosc,wynik,reprezentacja);
             if(i>=od_poczatku)
             {
                 if(i<pop.length-od_konca){wy.println("\t...");}
