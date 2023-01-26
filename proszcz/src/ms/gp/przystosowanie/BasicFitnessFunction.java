@@ -22,7 +22,12 @@ public abstract class BasicFitnessFunction implements FitnessFunction{
         calculate_expected_outputs();
         return 0;
     }
-    double simple_vector_distance(double a[],int alen,double[] b,int blen) {
+
+    public abstract double score(double[] a, int alen, double[] b, int blen);
+
+    double simple_vector_distance(double[] a, int alen, double[] b, int blen) {
+        return score(a, alen, b, blen);
+        /*
         double[] shorter = alen<=blen?a:b;
         double[] longer = alen>blen?a:b;
         int slen = alen<=blen?alen:blen;
@@ -35,7 +40,29 @@ public abstract class BasicFitnessFunction implements FitnessFunction{
         }
         for(;i<llen;i++){acum+=abs(longer[i]);}
         return acum;
+        */
+
     }
+    double square_vector_distance(double[] a, int alen, double[] b, int blen) {
+        double[] shorter = alen<=blen?a:b;
+        double[] longer = alen>blen?a:b;
+        int slen = Math.min(alen, blen);
+        int llen = Math.max(alen, blen);
+        double acum = 0.0;
+        int i;
+        for(i = 0; i < slen; i++)
+        {
+            double r = shorter[i]-longer[i];
+            acum+=r*r;
+        }
+        for(; i < llen; i++)
+        {
+            acum += longer[i] * longer[i];
+        }
+        return acum;
+    }
+
+
     double fitness_of_single_case(int index, double[] out,int outlen)
     {
         if(verbosity) {
@@ -62,11 +89,11 @@ public abstract class BasicFitnessFunction implements FitnessFunction{
     }
     @Override
     public double compute_fitness_of_outputs_for_cases(double[][] outs,int[] outlens, int tree_size, int[] execution_times) {
-        if(verbosity)System.out.format("CASE:%d outs\n",outs.length);
+        if(verbosity) System.out.format("CASE:%d outs\n",outs.length);
         double computed_fitness = fitness_as_mean(outs,outlens);
-        if(tree_size>100){computed_fitness *= tree_size/100.0;}
-        if(!Double.isFinite(computed_fitness)){computed_fitness = Double.MAX_VALUE;}
-        if(verbosity)System.out.format("FITNESS:%f\n",computed_fitness);
+        if(tree_size>100) {computed_fitness *= tree_size/100.0;}
+        if(!Double.isFinite(computed_fitness)) {computed_fitness = Double.MAX_VALUE;}
+        if(verbosity) System.out.format("FITNESS:%f\n",computed_fitness);
         return computed_fitness;
     }
 }

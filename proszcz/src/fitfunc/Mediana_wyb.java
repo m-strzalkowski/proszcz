@@ -2,7 +2,7 @@ package fitfunc;
 
 import ms.gp.przystosowanie.BasicFitnessFunction;
 
-public class Mediana extends BasicFitnessFunction {
+public class Mediana_wyb extends BasicFitnessFunction {
     @Override
     public double[] expected_output(double[] input)
     {
@@ -16,5 +16,15 @@ public class Mediana extends BasicFitnessFunction {
         var ret = new double[1];
         ret[0]=e;
         return ret;
+    }
+
+    @Override
+    public double score(double[] a, int alen, double[] b, int blen)
+    {
+        if(alen == 0 || blen == 0)
+            return 5.;
+        if(a[0] == b[0])
+            return 0.;
+        return 1.;
     }
 }
