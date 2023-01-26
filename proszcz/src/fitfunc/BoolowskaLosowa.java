@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
+import static java.lang.Math.abs;
+import static java.lang.Math.round;
 import static ms.drzewo.Definicje.PRAWDA;
 
 public class BoolowskaLosowa extends BasicFitnessFunction {
@@ -49,5 +51,21 @@ public class BoolowskaLosowa extends BasicFitnessFunction {
         case_counter++;
         //System.err.println(t[0]);
         return t;
+    }
+
+    @Override
+    public double score(double[] a, int alen, double[] b, int blen)
+    {
+        if(b.length == 0)
+            return 5.;
+
+        var bi = Math.round(b[0]);
+        var ai = Math.round(a[0]);
+
+        if(bi == ai)
+            return 0.;
+        else if(bi == -ai)
+            return 1.;
+        return 3.;
     }
 }

@@ -27,7 +27,7 @@ public class Ujemne_wstep extends BasicFitnessFunction {
             {
                 if(b[i] < 0)
                     acum += 3.;
-                else if(b[i] == 0)
+                else if(b[i] < 0.0001 && b[i] > -0.0001)
                     acum += 0.;
                 else acum += 1.;
             }

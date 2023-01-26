@@ -14,4 +14,20 @@ public class Boolowska extends BasicFitnessFunction {
         //System.err.println(t[0]);
         return t;
     }
+
+    @Override
+    public double score(double[] a, int alen, double[] b, int blen)
+    {
+        if(b.length == 0)
+            return 5.;
+
+        var bi = Math.round(b[0]);
+        var ai = Math.round(a[0]);
+
+        if(bi == ai)
+            return 0.;
+        else if(bi == -ai)
+            return 1.;
+        return 3.;
+    }
 }

@@ -5,7 +5,7 @@ env genet from "mediana.env.proszcz.txt";//na początku, by inicjalizacja zaszł
 gencases <-10,10:0.23>* 3;
 popsize curr 1500;
 initpop curr ramped-and-a-half 4;
-fitfunc from class fitfunc.Mediana;
+fitfunc from class fitfunc.Mediana_wstep;
 writepop curr to "pop.curr0.txt";
 echo "start evolution";
 fwd 20;
