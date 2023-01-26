@@ -21,13 +21,11 @@ public class Boolowska extends BasicFitnessFunction {
         if(b.length == 0)
             return 5.;
 
-        var bi = Math.round(b[0]);
-        var ai = Math.round(a[0]);
+        var bi = PRAWDA(b[0]);
+        var ai = PRAWDA(a[0]);
 
         if(bi == ai)
             return 0.;
-        else if(bi == -ai)
-            return 1.;
-        return 3.;
+        return 1.;
     }
 }
