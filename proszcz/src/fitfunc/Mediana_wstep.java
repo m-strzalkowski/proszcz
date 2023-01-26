@@ -14,7 +14,7 @@ public class Mediana_wstep extends BasicFitnessFunction {
     public double score(double[] a, int alen, double[] b, int blen)
     {
         if(b.length == 0)
-            return 1.;
+            return 5.;
 
         if(a[0] == b[0])
             return 0.;

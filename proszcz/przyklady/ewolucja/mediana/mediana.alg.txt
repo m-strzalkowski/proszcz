@@ -2,7 +2,7 @@ name mediana;
 echo "mediana";
 //cases from "dodawanie_krotkie.cases.txt" plain;
 env genet from "mediana.env.proszcz.txt";//na początku, by inicjalizacja zaszła poprawnie
-gencases <-10,10:0.23>* 3;
+gencases <-10,10:1>* 3;
 popsize curr 1500;
 initpop curr ramped-and-a-half 4;
 fitfunc from class fitfunc.Mediana_wstep;
