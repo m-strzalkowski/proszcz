@@ -1,0 +1,3 @@
+main::=(/MEMLIMIT::=4;\)
+if(read)-((write(read)- {(45.0+(4.0~=read));-62.0;(-76.0!~=-26.0);})) else [((-79.0- (write(-1.0)/read))/(-87.0+{-9.0;(28.0<read);if(-(((read!~=read)~=(read+42.0))|[(read>(read~=read))|((-41.0- -68.0)!~=(read/93.0))]))if({read;{{read;-14.0;read;};(-34.0~=read);(read/6.0);};((-31.0>read)~=(-99.0- read));})(((3.0+-59.0)*(7.0~=read))- if((read~=11.0))(14.0<-21.0) else (-48.0~=read)) else (([-64.0]- read|read)!~=if((63.0*-24.0))(-68.0+10.0) else read) else [{(-18.0<if(25.0)read else read);(-39.0*read);if(3.0)read else 49.0;}]|((63.0!~=[read])~=([read]!~=(0.0:=read)));})|2.0)];
+main;

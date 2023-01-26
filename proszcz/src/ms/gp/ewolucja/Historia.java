@@ -9,8 +9,15 @@ import java.util.ArrayList;
  * Zapisuje, co stało się w danej generacji
  */
 public class Historia {
-    private int numer;
+    public Historia(int numer) {
+        this.numer = numer;
+    }
 
+    public int getNumer() {
+        return numer;
+    }
+
+    private int numer;
     double najlepsze_przystosowanie;
     double średnie_przystosowanie;
     double najgorsze_przystosowanie;

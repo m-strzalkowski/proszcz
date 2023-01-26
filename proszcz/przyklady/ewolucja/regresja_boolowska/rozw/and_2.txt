@@ -1,0 +1,3 @@
+main::=(/MEMLIMIT::=4;\)
+(if((95.0<read))(read- 36.0) else write(read)|({((-(read)*(read*read))- ((read:=-37.0):=(read:=67.0)));(read/2.0)|read|read;}|-50.0>(-26.0*71.0))*(((21.0- read)!~=read|-91.0)+if(read)10.0 else read|-(write(read))));
+main;

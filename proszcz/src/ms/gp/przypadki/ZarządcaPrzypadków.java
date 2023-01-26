@@ -46,9 +46,9 @@ public class ZarządcaPrzypadków {
         {
             args.add(0.0);
             double val = minval;
-            for(int i=0;val<=maxval;i+=1)
+            for(int i=0;(val = minval + i*step)<=maxval;i+=1)
             {
-                val = minval + i*step;
+                //val = minval + i*step;
                 args.set(args.size()-1, val);
                 multi_iter(procedure,args,minval,maxval,step,maxcount);
             }

@@ -2,7 +2,7 @@ package fitfunc;
 
 import ms.gp.przystosowanie.BasicFitnessFunction;
 
-public class Ujemne extends BasicFitnessFunction {
+public class Ujemne extends BasicFitnessFunction {//ujemne zamienia na zero
     @Override
     public double[] expected_output(double[] input)
     {

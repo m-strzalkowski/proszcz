@@ -21,17 +21,12 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
 import sun.misc.Signal;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.SplittableRandom;
-import java.util.Stack;
+import java.util.*;
 
 import static java.lang.System.exit;
 import static java.lang.System.out;
@@ -39,10 +34,10 @@ import static ms.Tablice.SHARED_STDIN_SCANNER;
 import static ms.drzewo.operacje.losowe.RóżneLosowe.liczba_wezlow;
 import static ms.interpreter.Środowisko.domyślny_podawacz_drzew;
 
-public class Ewolutor {
+public class Ewolutor implements EvolutorAdapter{
     PrintStream wy = System.out;
     ArrayList<Historia> generacje = new ArrayList<>();
-    public int numer_generacji(){return generacje.size();}
+    public int numer_generacji(){return generacje.size()-1;}
     int numer_generacji_w_iteracji=0;
 
     double[][] fcases;//dane wejściowe
@@ -60,7 +55,7 @@ public class Ewolutor {
     FitnessFunction fprzyst;
     public Stack<GPInterpreter> interpretery = new Stack<>();
     public Ewolutor(){
-        this.generacje.add(new Historia());//zaczynamy w pierwszej generacji
+        this.generacje.add(new Historia(0));//zaczynamy w zerowej generacji
         this.zop.buduj_prawdopodobieństwa();
     }
     public Ewolutor(PrintStream wy){
@@ -133,7 +128,7 @@ public class Ewolutor {
         {
             String linia = scanner.nextLine();
             wykonaj_tekst(linia,true);
-            wy.format("%d:%d>",this.generacje.size(),interpretery.size());
+            wy.format("%d:%d>",this.numer_generacji(),interpretery.size());
         }
     }
 
@@ -144,7 +139,7 @@ public class Ewolutor {
         GPInterpreter interpreter = new GPInterpreter(this,wy,interaktywny);
         try {
             interpreter.visit(ptree);
-            generacje.get(generacje.size()-1).polecenia.add(tekst);//rejestrujemy wykonane polecenia
+            generacje.get(numer_generacji()).polecenia.add(tekst);//rejestrujemy wykonane polecenia
         }
         catch (RuntimeException ex)
         {
@@ -297,7 +292,7 @@ public class Ewolutor {
         this.zpop.populacje.put(NAZWA_AKTUALNEJ_POPULACJI,nowa_populacja);
         this.zpop.przystosowania.put(NAZWA_AKTUALNEJ_POPULACJI,wyniki);
         wydobywanie_najlepszych(nowa_populacja,wyniki);
-        generacje.add(new Historia());
+        generacje.add(new Historia(this.numer_generacji()+1));
         System.out.println("PASSING TO GENERATION "+numer_generacji());
     }
 
@@ -450,6 +445,7 @@ public class Ewolutor {
 
             }
         }
+
     }
     String NAZWA_POPULACJI_NAJLEPSZYCH = "best";
     String NAZWA_NAJLEPSZEGO_OD_POCZATKU = "bestever";
@@ -492,7 +488,10 @@ public class Ewolutor {
             zpop.przystosowania.put(NAZWA_NAJLEPSZEGO_OD_POCZATKU,winfit);
         }
         wy.format("avg %f best:%f best ever:%f\n",srednia,nfit[0],najlepszy_historycznie_fit==null?Double.NaN: najlepszy_historycznie_fit[0]);
-
+        Historia hist = this.generacje.get(this.numer_generacji());
+        hist.najgorsze_przystosowanie = Double.NaN;
+        hist.najlepsze_przystosowanie = nfit[0];
+        hist.średnie_przystosowanie = srednia;
     }
 
     public void załaduj_funkcję_przystosowania(String nazwa_klasy, String nazwa_pliku) {
@@ -523,6 +522,7 @@ public class Ewolutor {
         }
         //if(func==null){  System.err.println("func==null"); exit(1);}
         this.fprzyst = func;
+        this.fprzyst.set_adapter(this);
         wy.println("Successfully loaded fitness function from"+nazwa_klasy);
     }
 
@@ -538,5 +538,34 @@ public class Ewolutor {
             out.print("* main;\n\n\n");
             out.close();
         } catch (FileNotFoundException e){e.printStackTrace();}
+    }
+
+    public void pisz_historie()
+    {
+        try {
+
+            var wy = new PrintStream(sciezka_pliku("stats.csv").toAbsolutePath().toString());
+            out.format("nr_generacji najgorsza srednia najlepsza\n");
+            wy.format("nr_generacji najgorsza srednia najlepsza\n");
+            for (var generacja:this.generacje) {
+                if(generacja.getNumer()>=numer_generacji()){break;}
+                out.format(Locale.ROOT,"%d %f %f %f\n",generacja.getNumer(),generacja.najgorsze_przystosowanie,generacja.średnie_przystosowanie,generacja.najlepsze_przystosowanie);
+                wy.format(Locale.ROOT,"%d %f %f %f\n",generacja.getNumer(),generacja.najgorsze_przystosowanie,generacja.średnie_przystosowanie,generacja.najlepsze_przystosowanie);
+            }
+            wy.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    @Override
+    public int GENERATION() {
+        return numer_generacji();
+    }
+
+    @Override
+    public Object getInternalObject() {
+        return this;
     }
 }

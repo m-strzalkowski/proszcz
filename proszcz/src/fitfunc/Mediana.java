@@ -2,7 +2,7 @@ package fitfunc;
 
 import ms.gp.przystosowanie.BasicFitnessFunction;
 
-public class Mediana extends BasicFitnessFunction {
+public class Mediana extends BasicFitnessFunction {//mediana trzech
     @Override
     public double[] expected_output(double[] input)
     {

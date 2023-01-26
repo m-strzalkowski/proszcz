@@ -1,13 +1,17 @@
 package ms.gp.przystosowanie;
 
+import ms.gp.ewolucja.EvolutorAdapter;
+
 import static java.lang.Math.abs;
 
 public abstract class BasicFitnessFunction implements FitnessFunction{
     private double[][] fitcases=null;
     private double [][] expected_outputs=null;
     private boolean verbosity = false;
+    protected EvolutorAdapter adapter=null;
     public abstract double[] expected_output(double[] input);
     public void set_verbosity(boolean verbosity){this.verbosity=verbosity;}
+    public void set_adapter(EvolutorAdapter adapter){this.adapter=adapter;}
     void calculate_expected_outputs()
     {
         expected_outputs = new double[fitcases.length][];

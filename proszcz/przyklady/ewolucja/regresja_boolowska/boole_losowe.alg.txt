@@ -1,0 +1,16 @@
+name regresja_boolowska;
+echo "regresja_boolowska funkcji wylosowanej";
+//cases from "dodawanie_krotkie.cases.txt" plain;
+env genet from "boole_losowe.env.proszcz.txt";//na początku, by inicjalizacja zaszła poprawnie
+gencases<-1,1:2> * 5;//trójargumentowa tabelka prawdy (ujemne - fałsz, dodatnie, łącznnie z 0 - prawda)
+popsize curr 50000;
+initpop curr ramped-and-a-half 6;
+fitfunc from class fitfunc.BoolowskaLosowa;
+writepop curr to "pop.curr0.txt";
+fwd 50;
+writepop bestever to "pop.bestever.txt";
+writepop curr to "pop.currI.txt";
+stats;
+//writepop curr;
+inspect;
+echo "end regresja_boolowska";
